@@ -9,7 +9,7 @@ import Foundation
 
 struct CurrentWeather {
   let address: Location
-  let temperature: Int // 소수점
+  let temperature: Int
   let maxTemp: Int
   let minTemp: Int
   let feelsLikeTemp: Int
@@ -18,6 +18,7 @@ struct CurrentWeather {
   let hourlyForecast: [HourlyForecast]
   let dailyForecast: [DailyForecast]
   let humidity: Int
+  let windSpeed: Int
   let airQuality: AirQuality
   let sunrise: String
   let sunset: String
