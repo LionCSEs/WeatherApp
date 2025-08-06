@@ -1,0 +1,25 @@
+# https://editorconfig.org
+
+# 최상위 EditorConfig 파일임을 나타냅니다.
+root = true
+
+# 모든 파일에 적용될 규칙
+[*.swift]
+# 들여쓰기 스타일은 space, 크기는 2칸
+indent_style = space
+indent_size = 2
+
+# 라인 끝 문자는 Line Feed(LF) 사용 (Unix/macOS 표준)
+end_of_line = lf
+
+# 문자 인코딩은 UTF-8 사용
+charset = utf-8
+
+# 라인 끝의 불필요한 공백 제거
+trim_trailing_whitespace = true
+
+# 파일 끝에 빈 줄 추가
+insert_final_newline = true
+
+# 한 줄의 최대 길이
+max_line_length = 99

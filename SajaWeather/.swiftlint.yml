@@ -1,0 +1,74 @@
+# StyleShare Swift 스타일 가이드를 기반으로 생성된 .swiftlint.yml 파일
+
+
+excluded:
+  - SajaWeather/AppDelegate.swift
+  - SajaWeather/SceneDelegate.swift
+
+# 먼저 기본 규칙들 중 일부를 비활성화합니다.
+# 특정 규칙들은 가이드와 충돌하거나, 너무 엄격할 수 있어 제외합니다.
+disabled_rules:
+  - todo # TODO 주석을 에러로 처리하지 않음
+  - trailing_comma # 마지막 콤마를 강제하지 않음
+  - trailing_whitespace
+  - closure_parameter_position
+
+# 기본적으로 비활성화된 규칙 중, 가이드에 따라 활성화할 규칙들을 명시합니다.
+opt_in_rules:
+  - trailing_closure # 클로저를 마지막 파라미터로 받을 때, 파라미터 이름 생략 (가이드: Closure 호출 규칙)
+  - closure_parameter_position # 클로저 파라미터는 괄호 바깥에 위치 (가이드: 클로저 파라미터 괄호 미사용)
+  - redundant_type_annotation # 불필요한 타입 정의 생략 (가이드: 클로저 타입 정의 생략)
+  - void_return # '() -> ()' 대신 '() -> Void' 사용 (가이드: 클로저 Void 타입 사용)
+  - syntactic_sugar # Array<T> 대신 [T] 사용 (가이드: 타입 표기법)
+  - legacy_cggeometry_functions # CGRectMake 대신 CGRect 사용 (가이드: 구조체 생성자)
+  - mark # '// MARK:' 주석 형식 검사 (가이드: 주석 규칙)
+  - trailing_newline # 모든 파일은 빈 줄로 끝나도록 강제 (가이드: 빈 줄 규칙)
+
+# 개별 규칙에 대한 상세 설정
+# 가이드에 명시된 내용을 중심으로 설정합니다.
+
+# 코드 레이아웃
+indentation: 2 # 들여쓰기는 2개의 space 사용
+
+line_length:
+  warning: 99 # 최대 줄 길이는 99자로 경고
+  ignores_comments: true
+  ignores_urls: true
+
+colon: # 콜론(:)은 오른쪽에만 공백
+  flexible_right_spacing: false
+
+# 네이밍 규칙
+type_name: # 클래스, 구조체, 열거형, 프로토콜 이름은 UpperCamelCase
+  min_length: 3
+  max_length: 40
+
+identifier_name: # 변수, 상수, 함수, 열거형 case 이름은 lowerCamelCase
+  min_length: 2
+  max_length: 40
+  # 'id'와 같이 너무 짧은 이름은 제외, 약어 규칙은 커스텀 룰 필요
+  excluded:
+    - id
+    - URL
+    - Global
+    - x
+    - y
+    - z
+  # 약어(ID, URL) 관련 규칙은 SwiftLint 기본 규칙으로 완벽히 구현하기 어려워
+  # 우선 대문자 약어를 허용하도록 설정합니다.
+  allowed_symbols: ["_"] # private 변수 등에 _ prefix 허용
+
+# 함수
+function_body_length:
+  warning: 50
+  error: 80
+
+# 기타
+file_length:
+  warning: 500
+  error: 800
+
+
+analyzer_rules:
+  - explicit_self
+
