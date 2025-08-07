@@ -10,35 +10,39 @@ import CoreLocation
 import RxSwift
 import RxCocoa
 
-// 날씨 정보 받아오라는 액션 -> 권한 확인 -> 위치 정보 수신 -> 날씨 요청
-// 으로 변경 예정
+// 의존성 주입을 위한 추상화 - Stub을 써서 가짜 위치를 반환할 수도 있게
+protocol LocationServiceType {
+  func getLocation() -> Observable<CLLocation>
+}
 
-final class LocationService {
-  static let shared = LocationService()
-  
+final class LocationService: LocationServiceType {
   private let manager = CLLocationManager()
-  private let disposeBag = DisposeBag()
   
-  private init() {}
-  
-  enum LocationError: Error {
-    case authorizationDenied
-  }
-  
-  // 싱글톤 패턴으로 얘를 구독해서 CLLocation 값을 얻으시면 됩니다.
+  // 뷰모델 등에서 호출해 Rx 방식으로 위치를 받아오는 메서드
   func getLocation() -> Observable<CLLocation> {
-    let requestAuthorization = manager.rx.requestWhenInUseAuthorization()
-    let requestLocations = manager.rx.requestLocations()
-      .compactMap(\.last)
-      .first()
-      .compactMap { $0 }
     
+    // RxSwift 확장 기능을 통해 위치 권한을 요청해 Observable<CLAuthorizationStatus>로 리턴받음
+    let requestAuthorization = manager.rx.requestWhenInUseAuthorization()
+    
+    // 위치 요청해 [CLLocation] 형태로 수신. 그것을 아래처럼 처리
+    let requestLocation = manager.rx.requestLocations()
+      .compactMap(\.last) // [CLLocation] 값 중 마지막 값
+      .timeout(.seconds(5), scheduler: MainScheduler.instance) // 5초 이내에 응답받지 못한 경우
+      .catch { _ in Observable.error(LocationError.timeout) } // .timeout 에러 방출 (앱 멈춤 방지)
+      .take(1) // 처음 emit된 한 번의 위치만 받고 스트림 종료
+    
+    // 권한 상태에 따른 분기 처리 (허용 시 위치 요청, 거부 또는 제한 시 해당 LocationError 발생)
     return requestAuthorization
       .flatMap { status -> Observable<CLLocation> in
-        if status == .authorizedWhenInUse || status == .authorizedAlways {
-          return requestLocations.asObservable()
-        } else {
+        switch status {
+        case .authorizedWhenInUse, .authorizedAlways:
+          return requestLocation
+        case .denied:
           return .error(LocationError.authorizationDenied)
+        case .restricted:
+          return .error(LocationError.authorizationRestricted)
+        default:
+          return .error(LocationError.unknown)
         }
       }
   }
@@ -63,9 +67,6 @@ extension Reactive where Base: CLLocationManager {
       .do(onSubscribe: { [base] in
         base.requestWhenInUseAuthorization()
       })
-      .startWith(base.authorizationStatus) // 기존 상태도 반영하되, 결정 안 됐으면 대기
-      .distinctUntilChanged()
-      .filter { $0 != .notDetermined } // 결정된 이후에만 emit
       .take(1)
     return Observable
       .create { [base] observer in
