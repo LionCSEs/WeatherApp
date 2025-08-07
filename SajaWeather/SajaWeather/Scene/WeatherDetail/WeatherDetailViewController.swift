@@ -33,6 +33,7 @@ final class WeatherDetailViewController: UIViewController {
     super.viewDidLoad()
     
     configureUI()
+    bind()
   }
   
   private func configureUI() {
@@ -42,7 +43,9 @@ final class WeatherDetailViewController: UIViewController {
     button.snp.makeConstraints {
       $0.center.equalToSuperview()
     }
-    
+  }
+  
+  private func bind() {
     button.rx.tap
       .map { WeatherDetailViewModel.Action.requestLocation }
       .bind(to: viewModel.action)
