@@ -1,0 +1,15 @@
+//
+//  Location.swift
+//  SajaWeather
+//
+//  Created by Milou on 8/6/25.
+//
+
+import Foundation
+import CoreLocation
+
+struct Location {
+  let fullAddress: String     // "서울특별시 종로구 사직동"
+  let displayAddress: String       // "사직동" 
+  let coordinate: CLLocationCoordinate2D
+}
