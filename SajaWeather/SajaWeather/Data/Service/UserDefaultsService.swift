@@ -24,7 +24,7 @@ class UserDefaultsService {
     return defaults.stringArray(forKey: UserDefaultsKey.recentSearchHistory) ?? []
   }
   
-  func adddRecentSearchHistory(_ keyword: String) {
+  func addRecentSearchHistory(_ keyword: String) {
     var history = loadRecentSearchHistory()
     
     history.removeAll { $0 == keyword }   // 중복 제거
