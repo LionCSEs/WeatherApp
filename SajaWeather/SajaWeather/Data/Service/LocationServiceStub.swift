@@ -21,8 +21,6 @@ final class LocationServiceStub: LocationServiceType {
     self.location = location
     self.error = error
     self.delay = delay
-    // 실제 위치 정보를 불러올 때 최대 10초 가량의 딜레이가 발생할 수 있다고 하네요.
-    // 그래서 썼는데 필요없다는 판단이 있다면 LocationService의 timeout과 함께 지워도 될 것 같습니다.
   }
   
   func getLocation() -> Observable<CLLocation> {
