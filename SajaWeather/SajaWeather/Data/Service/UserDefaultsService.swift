@@ -9,6 +9,7 @@ import Foundation
 
 enum UserDefaultsKey {
   static let recentSearchHistory = "recentSearchHistory"
+  static let savedLocation = "savedLocation"
 }
 
 class UserDefaultsService {
@@ -37,5 +38,35 @@ class UserDefaultsService {
   
   func removeAllRecentSearchHistory() {
     defaults.removeObject(forKey: UserDefaultsKey.recentSearchHistory)
+  }
+  
+  // MARK: - 저장된 위치 관리
+  
+  func loadSavedLocation() -> [SavedLocation] {
+    guard let data = defaults.data(forKey: UserDefaultsKey.savedLocation),
+          let locationData = try? JSONDecoder().decode([SavedLocation].self, from: data) else {
+      return []
+    }
+    return locationData
+  }
+  
+  func addSavedLocation(_ location: SavedLocation) {
+    var locations = loadSavedLocation()
+    if !locations.contains(where: { $0.name == location.name }) {
+      locations.append(location)
+      saveSavedLocation(locations)
+    }
+  }
+  
+  func removeSavedLocation(name: String) {
+    var locations = loadSavedLocation()
+    locations.removeAll { $0.name == name }
+    saveSavedLocation(locations)
+  }
+  
+  func saveSavedLocation(_ locations: [SavedLocation]) {
+    if let data = try? JSONEncoder().encode(locations) {
+      defaults.set(data, forKey: UserDefaultsKey.savedLocation)
+    }
   }
 }
