@@ -9,11 +9,16 @@ import UIKit
 import RxSwift
 import RxCocoa
 import CoreLocation
+import Then
+import SnapKit
 
 final class WeatherDetailViewController: UIViewController {
   private let viewModel: WeatherDetailViewModel
   private let disposeBag = DisposeBag()
-  private let button = UIButton(type: .system)
+  
+  private let button = UIButton(configuration: .filled()).then {
+    $0.setTitle("위치 가져오기", for: .normal)
+  }
   
   init(viewModel: WeatherDetailViewModel) {
     self.viewModel = viewModel
@@ -24,18 +29,19 @@ final class WeatherDetailViewController: UIViewController {
     fatalError("init(coder:) has not been implemented")
   }
   
-  
   override func viewDidLoad() {
     super.viewDidLoad()
+    
+    configureUI()
+  }
+  
+  private func configureUI() {
     view.backgroundColor = .systemBackground
     
-    button.setTitle("위치 가져오기", for: .normal)
-    button.translatesAutoresizingMaskIntoConstraints = false
     view.addSubview(button)
-    NSLayoutConstraint.activate([
-      button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-      button.centerYAnchor.constraint(equalTo: view.centerYAnchor)
-    ])
+    button.snp.makeConstraints {
+      $0.center.equalToSuperview()
+    }
     
     button.rx.tap
       .map { WeatherDetailViewModel.Action.requestLocation }
