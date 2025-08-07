@@ -27,7 +27,7 @@ final class LocationService: LocationServiceType {
     // 위치 요청해 [CLLocation] 형태로 수신. 그것을 아래처럼 처리
     let requestLocation = manager.rx.requestLocations()
       .compactMap(\.last) // [CLLocation] 값 중 마지막 값
-      .timeout(.seconds(5), scheduler: MainScheduler.instance) // 5초 이내에 응답받지 못한 경우
+      .timeout(.seconds(10), scheduler: MainScheduler.instance) // 10초 이내에 응답받지 못한 경우
       .catch { _ in Observable.error(LocationError.timeout) } // .timeout 에러 방출 (앱 멈춤 방지)
       .take(1) // 처음 emit된 한 번의 위치만 받고 스트림 종료
     
