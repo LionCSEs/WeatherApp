@@ -9,7 +9,7 @@ import Foundation
 import CoreLocation
 
 struct Location {
-  let fullAddress: String     // "서울특별시 종로구 사직동"
-  let displayAddress: String       // "사직동" 
+  let fullAddress: String     // 나중에 MKLocalSearch로
+  let displayAddress: String       // 나중에 MKLocalSearch로
   let coordinate: CLLocationCoordinate2D
 }

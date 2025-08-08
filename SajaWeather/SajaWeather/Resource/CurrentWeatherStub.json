@@ -1,0 +1,49 @@
+{
+    "coord": {
+        "lon": 126.8112,
+        "lat": 33.5577
+    },
+    "weather": [
+        {
+            "id": 500,
+            "main": "Rain",
+            "description": "실 비",
+            "icon": "10n"
+        }
+    ],
+    "base": "stations",
+    "main": {
+        "temp": 25.11,
+        "feels_like": 26,
+        "temp_min": 25.11,
+        "temp_max": 25.11,
+        "pressure": 1006,
+        "humidity": 89,
+        "sea_level": 1006,
+        "grnd_level": 993
+    },
+    "visibility": 10000,
+    "wind": {
+        "speed": 2.09,
+        "deg": 189,
+        "gust": 2.66
+    },
+    "rain": {
+        "1h": 0.48
+    },
+    "clouds": {
+        "all": 100
+    },
+    "dt": 1754673504,
+    "sys": {
+        "type": 1,
+        "id": 8087,
+        "country": "KR",
+        "sunrise": 1754686232,
+        "sunset": 1754735169
+    },
+    "timezone": 32400,
+    "id": 1846266,
+    "name": "Jeju City",
+    "cod": 200
+}

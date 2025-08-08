@@ -8,7 +8,7 @@
 import Foundation
 
 struct HourlyForecast {
-  let hour: Int
+  let hour: String
   let icon: Int // id
   let temperature: Int
   let humidity: Int
