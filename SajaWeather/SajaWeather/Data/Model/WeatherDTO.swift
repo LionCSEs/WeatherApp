@@ -51,10 +51,10 @@ struct DailyTempDTO: Codable {
 // MARK: - Air Quality Response
 
 struct AirQualityResponseDTO: Codable {
-  let list: [AirQuailityItemDTO]
+  let list: [AirQualityItemDTO]
 }
 
-struct AirQuailityItemDTO: Codable {
+struct AirQualityItemDTO: Codable {
   let main: AirQualityMainDTO
 }
 
