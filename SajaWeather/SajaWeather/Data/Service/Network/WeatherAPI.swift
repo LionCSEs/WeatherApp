@@ -90,6 +90,20 @@ extension WeatherAPI: TargetType {
   var headers: [String : String]? {
     return ["Content-Type": "application/json"]
   }
+  
+  
+  var sampleData: Data {
+    switch self {
+    case .current:
+      return stubData(from: "CurrentWeatherStub")
+    case .hourlyForecast(lat: let lat, lon: let lon):
+      return stubData(from: "HourlyForecastStub")
+    case .dailyForecast(lat: let lat, lon: let lon):
+      return stubData(from: "DailyForecastStub")
+    case .airQuality(lat: let lat, lon: let lon):
+      return stubData(from: "AirQualityStub")
+    }
+  }
 }
 
 extension WeatherAPI {
@@ -99,4 +113,12 @@ extension WeatherAPI {
     }
     return key
   }
+}
+
+fileprivate func stubData(from fileName: String) -> Data {
+  guard let url = Bundle.main.url(forResource: fileName, withExtension: "json"),
+        let data = try? Data(contentsOf: url) else {
+    return Data()
+  }
+  return data
 }
