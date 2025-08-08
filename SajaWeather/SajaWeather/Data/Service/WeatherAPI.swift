@@ -59,7 +59,7 @@ extension WeatherAPI: TargetType {
           "appid": apiKey,
           "units": "metric",
           "lang": "kr",
-          "cnt" : 48 // 내일까지
+          "cnt" : 24
         ],
         encoding: URLEncoding.queryString
       )
