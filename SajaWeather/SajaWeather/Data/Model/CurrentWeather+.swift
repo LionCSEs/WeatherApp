@@ -36,14 +36,14 @@ extension CurrentWeather {
     
     let sunrise = currentWeather.sys.sunrise
     let sunset = currentWeather.sys.sunset
-    self.sunrise = DateFormatter.timeFormatter(TimeInterval(sunrise))
-    self.sunset = DateFormatter.timeFormatter(TimeInterval(sunset))
+    self.sunrise = DateFormatter.formatTime(TimeInterval(sunrise))
+    self.sunset = DateFormatter.formatTime(TimeInterval(sunset))
     
     let aqiValue = airQuality.list.first?.main.aqi ?? 1
     self.airQuality = AirQuality(rawValue: aqiValue) ?? .good
     
     self.hourlyForecast = hourlyForecast.list.map { item in
-      let hour = DateFormatter.hourlyFormatter(TimeInterval(item.dt))
+      let hour = DateFormatter.formatHour(TimeInterval(item.dt))
       return HourlyForecast(
         hour: hour,
         icon: item.weather.first?.id ?? 800,
@@ -53,7 +53,7 @@ extension CurrentWeather {
     }
     
     self.dailyForecast = dailyForecast.list.map { item in
-      let day = DateFormatter.dayFormatter(TimeInterval(item.dt))
+      let day = DateFormatter.formatDay(TimeInterval(item.dt))
       return DailyForecast(
         day: day,
         humidity: item.humidity,

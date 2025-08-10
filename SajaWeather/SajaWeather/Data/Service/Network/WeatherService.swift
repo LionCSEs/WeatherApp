@@ -67,9 +67,5 @@ final class WeatherService: WeatherServiceType {
         coordinate: coordinate
       )
     }
-    .catch { error in
-      return Observable.error(error)
-    }
   }
 }
-
