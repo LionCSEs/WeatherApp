@@ -12,8 +12,19 @@ import CoreLocation
 import Then
 import SnapKit
 
+/// Weather Detail Section
+enum WDSection: Hashable {
+  
+}
+
+enum WDItem: Hashable {
+  
+}
+
 final class WeatherDetailViewController: UIViewController {
+  private let weatherDetailView = WeatherDetailView()
   private let viewModel: WeatherDetailViewModel
+  private var dataSource: UICollectionViewDiffableDataSource<WDSection, WDItem>!
   private let disposeBag = DisposeBag()
   
   private let button = UIButton(configuration: .filled()).then {
