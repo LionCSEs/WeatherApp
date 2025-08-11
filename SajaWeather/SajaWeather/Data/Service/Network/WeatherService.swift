@@ -12,7 +12,7 @@ import Moya
 import CoreLocation
 
 protocol WeatherServiceType {
-  func getCurrentWeather(coordinate: CLLocationCoordinate2D) -> Observable<CurrentWeather>
+  func getCurrentWeather(coordinate: CLLocationCoordinate2D) -> Single<CurrentWeather>
 }
 
 final class WeatherService: WeatherServiceType {
@@ -29,31 +29,27 @@ final class WeatherService: WeatherServiceType {
     )
   }
   
-  func getCurrentWeather(coordinate: CLLocationCoordinate2D) -> Observable<CurrentWeather> {
+  func getCurrentWeather(coordinate: CLLocationCoordinate2D) -> Single<CurrentWeather> {
     let lat = coordinate.latitude
     let lon = coordinate.longitude
     
     let currentWeatherObservable = provider.rx
       .request(.current(lat: lat, lon: lon))
       .map(CurrentWeatherResponseDTO.self)
-      .asObservable()
     
     let hourlyForecastObservable = provider.rx
       .request(.hourlyForecast(lat: lat, lon: lon))
       .map(HourlyForecastResponseDTO.self)
-      .asObservable()
     
     let dailyForecastObservable = provider.rx
       .request(.dailyForecast(lat: lat, lon: lon))
       .map(DailyForecastResponseDTO.self)
-      .asObservable()
     
     let airQualityObservable = provider.rx
       .request(.airQuality(lat: lat, lon: lon))
       .map(AirQualityResponseDTO.self)
-      .asObservable()
     
-    return Observable.zip(
+    return Single.zip(
       currentWeatherObservable,
       hourlyForecastObservable,
       dailyForecastObservable,
@@ -66,6 +62,10 @@ final class WeatherService: WeatherServiceType {
         airQuality: airQuality,
         coordinate: coordinate
       )
+    }
+    .catch { error in
+      print("WeatherService Error: \(error)")
+      return Single.error(error)
     }
   }
 }

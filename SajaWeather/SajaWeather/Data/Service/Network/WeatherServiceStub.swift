@@ -12,7 +12,7 @@ import RxMoya
 import Moya
 
 final class WeatherServiceStub: WeatherServiceType {
-  func getCurrentWeather(coordinate: CLLocationCoordinate2D) -> Observable<CurrentWeather> {
+  func getCurrentWeather(coordinate: CLLocationCoordinate2D) -> Single<CurrentWeather> {
     
     let stubProvider = MoyaProvider<WeatherAPI>(stubClosure: MoyaProvider.immediatelyStub)
     let weatherService = WeatherService(provider: stubProvider)
