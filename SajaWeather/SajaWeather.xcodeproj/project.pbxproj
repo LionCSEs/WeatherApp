@@ -15,12 +15,15 @@
 		B53409892E4316670029C85E /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B53409882E4316670029C85E /* RxSwift */; };
 		B534098C2E4317340029C85E /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = B534098B2E4317340029C85E /* .swiftlint.yml */; };
 		B534098E2E4319920029C85E /* .editorconfig in Resources */ = {isa = PBXBuildFile; fileRef = B534098D2E4319920029C85E /* .editorconfig */; };
+		B5340DAF2E4375E30029C85E /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = B5340DAE2E4375E30029C85E /* Config.xcconfig */; };
+		B53410762E445FED0029C85E /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = B53410752E445FED0029C85E /* RxMoya */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B534095F2E4313F50029C85E /* SajaWeather.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SajaWeather.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B534098B2E4317340029C85E /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		B534098D2E4319920029C85E /* .editorconfig */ = {isa = PBXFileReference; lastKnownFileType = text; path = .editorconfig; sourceTree = "<group>"; };
+		B5340DAE2E4375E30029C85E /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -53,6 +56,7 @@
 				B53409872E4316670029C85E /* RxRelay in Frameworks */,
 				B534097C2E4316380029C85E /* SnapKit in Frameworks */,
 				B53409822E4316510029C85E /* ReactorKit in Frameworks */,
+				B53410762E445FED0029C85E /* RxMoya in Frameworks */,
 				B53409852E4316670029C85E /* RxCocoa in Frameworks */,
 				B534097F2E4316430029C85E /* Then in Frameworks */,
 			);
@@ -66,6 +70,7 @@
 			children = (
 				B534098D2E4319920029C85E /* .editorconfig */,
 				B534098B2E4317340029C85E /* .swiftlint.yml */,
+				B5340DAE2E4375E30029C85E /* Config.xcconfig */,
 				B53409612E4313F50029C85E /* SajaWeather */,
 				B53409602E4313F50029C85E /* Products */,
 			);
@@ -106,6 +111,7 @@
 				B53409842E4316670029C85E /* RxCocoa */,
 				B53409862E4316670029C85E /* RxRelay */,
 				B53409882E4316670029C85E /* RxSwift */,
+				B53410752E445FED0029C85E /* RxMoya */,
 			);
 			productName = SajaWeather;
 			productReference = B534095F2E4313F50029C85E /* SajaWeather.app */;
@@ -140,6 +146,7 @@
 				B534097D2E4316430029C85E /* XCRemoteSwiftPackageReference "Then" */,
 				B53409802E4316510029C85E /* XCRemoteSwiftPackageReference "ReactorKit" */,
 				B53409832E4316670029C85E /* XCRemoteSwiftPackageReference "RxSwift" */,
+				B53410742E445FED0029C85E /* XCRemoteSwiftPackageReference "Moya" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B53409602E4313F50029C85E /* Products */;
@@ -157,6 +164,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B534098E2E4319920029C85E /* .editorconfig in Resources */,
+				B5340DAF2E4375E30029C85E /* Config.xcconfig in Resources */,
 				B534098C2E4317340029C85E /* .swiftlint.yml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -197,6 +205,7 @@
 /* Begin XCBuildConfiguration section */
 		B53409732E4313F70029C85E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B5340DAE2E4375E30029C85E /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -230,6 +239,7 @@
 		};
 		B53409742E4313F70029C85E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B5340DAE2E4375E30029C85E /* Config.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -438,6 +448,14 @@
 				minimumVersion = 6.9.0;
 			};
 		};
+		B53410742E445FED0029C85E /* XCRemoteSwiftPackageReference "Moya" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Moya/Moya.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 15.0.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -470,6 +488,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B53409832E4316670029C85E /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxSwift;
+		};
+		B53410752E445FED0029C85E /* RxMoya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B53410742E445FED0029C85E /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = RxMoya;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
