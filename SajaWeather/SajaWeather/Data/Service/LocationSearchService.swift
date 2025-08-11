@@ -53,9 +53,7 @@ final class LocationSearchService: NSObject, LocationSearchServiceType {
         }
       }
     .timeout(.seconds(5), scheduler: MainScheduler.instance)
-    .catch { error in
-      return Observable.just([])
-    }
+    .catchAndReturn([])
   }
   
   // MARK: - 선택된 위치에 대한 상세 정보 검색
