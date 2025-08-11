@@ -8,6 +8,35 @@
 import RxSwift
 import RxRelay
 import CoreLocation
+import ReactorKit
+
+//final class WeatherDetailReactor: Reactor {
+//  struct State {
+//    var location: CLLocation?
+//    var error: LocationError?
+//  }
+//  
+//  enum Action {
+//    case requestLocation
+//  }
+//
+//  enum Mutation { // state의 값을 어떻게 바꿔야 하나?
+//    case setLocation(CLLocation)
+//    case setError(LocationError)
+//    
+//  }
+//  
+//  let initialState = State()
+//  
+//  func mutate(action: Action) -> Observable<Mutation> {
+//    <#code#>
+//  }
+//  
+//  func reduce(state: State, mutation: Mutation) -> State {
+//    <#code#>
+//  }
+//
+//}
 
 final class WeatherDetailViewModel {
   struct State {

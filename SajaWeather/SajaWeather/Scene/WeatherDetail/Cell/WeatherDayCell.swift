@@ -42,5 +42,6 @@ struct WeatherDayCell: View {
 }
 
 #Preview {
+  WeatherDayCell(date: "오늘", humidity: 60, icon: "531", maxTemp: 31, minTemp: 27)
   WeatherDayCell(date: "8월 11일 월요일", humidity: 10, icon: "200", maxTemp: 31, minTemp: 27)
 }
