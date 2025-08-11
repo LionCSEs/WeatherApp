@@ -10,12 +10,12 @@ import RxSwift
 import CoreLocation
 
 protocol WeatherRepositoryType {
-  var temperatureUnit: TemperatureUnit { get set }
+  var units: TemperatureUnit { get set }
   func getCurrentWeather(coordinate: CLLocationCoordinate2D) -> Single<CurrentWeather>
 }
 
 final class WeatherRepository: WeatherRepositoryType {
-  var temperatureUnit: TemperatureUnit = .celsius
+  var units: TemperatureUnit = .celsius
   
   private let weatherService: WeatherServiceType
   
@@ -24,6 +24,6 @@ final class WeatherRepository: WeatherRepositoryType {
   }
   
   func getCurrentWeather(coordinate: CLLocationCoordinate2D) -> Single<CurrentWeather> {
-    return weatherService.getCurrentWeather(coordinate: coordinate, units: temperatureUnit)
+    return weatherService.getCurrentWeather(coordinate: coordinate, units: units)
   }
 }
