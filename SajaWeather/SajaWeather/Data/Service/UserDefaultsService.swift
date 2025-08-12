@@ -10,6 +10,7 @@ import Foundation
 enum UserDefaultsKey {
   static let recentSearchHistory = "recentSearchHistory"
   static let savedLocation = "savedLocation"
+  static let temperatureUnit = "TemperatureUnit"
 }
 
 class UserDefaultsService {
@@ -68,5 +69,15 @@ class UserDefaultsService {
     if let data = try? JSONEncoder().encode(locations) {
       defaults.set(data, forKey: UserDefaultsKey.savedLocation)
     }
+  }
+  
+  // MARK: - 섭씨/화씨 관리
+  
+  func loadTemperatureUnit() -> String {
+    defaults.string(forKey: UserDefaultsKey.temperatureUnit) ?? TemperatureUnit.celsius.rawValue
+  }
+  
+  func saveTemperatureUnit(_ temp: String) {
+    defaults.set(temp, forKey: UserDefaultsKey.temperatureUnit)
   }
 }

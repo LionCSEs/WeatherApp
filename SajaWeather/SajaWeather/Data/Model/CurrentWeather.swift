@@ -20,6 +20,6 @@ struct CurrentWeather {
   let humidity: Int
   let windSpeed: Int
   let airQuality: AirQuality
-  let sunrise: String
-  let sunset: String
+  let sunrise: Date
+  let sunset: Date
 }
