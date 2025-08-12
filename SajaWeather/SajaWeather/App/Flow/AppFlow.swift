@@ -11,22 +11,31 @@ import RxSwift
 
 final class AppFlow: Flow {
   var root: Presentable {
-    return self.rootViewController
+    return self.window
   }
-  
+  private let window: UIWindow
   private let rootViewController: UINavigationController = {
     let navigationController = UINavigationController()
     navigationController.setNavigationBarHidden(true, animated: false)
     return navigationController
   }()
   
-  // 의존성
+  // MARK: - Dependencies
+  
   private let locationService: LocationServiceType = LocationService()
   private let weatherRepository: WeatherRepositoryType = {
     let weatherService: WeatherServiceType = WeatherService()
     return WeatherRepository(weatherService: weatherService)
   }()
   private let locationSearchService: LocationSearchServiceType = LocationSearchService()
+  
+  // MARK: - Initializer
+  
+  init(window: UIWindow) {
+     self.window = window
+     self.window.rootViewController = rootViewController
+     self.window.makeKeyAndVisible()
+   }
   
   func navigate(to step: any Step) -> FlowContributors {
     guard let step = step as? AppStep else { return .none }

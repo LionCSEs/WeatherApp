@@ -22,7 +22,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     guard let windowScene = (scene as? UIWindowScene) else { return }
     let window = UIWindow(windowScene: windowScene)
     
-    let appFlow = AppFlow()
+    let appFlow = AppFlow(window: window)
     
     let temp: Coordinate = CLLocationCoordinate2D(latitude: 33.55766, longitude: 126.8112)
     
@@ -31,9 +31,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
       with: OneStepper(withSingleStep: AppStep.weatherDetailIsRequired(temp))
     )
     
-    window.rootViewController = appFlow.root as? UIViewController
-    
-    window.makeKeyAndVisible()
     self.window = window
   }
 
