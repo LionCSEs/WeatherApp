@@ -15,6 +15,16 @@ final class WeatherDetailView: UIView {
   // MARK: - Background (Gradient)
   private let backgroundGradient = GradientView(style: .clearDay)
 
+  let listButton = UIButton(type: .system).then {
+    $0.setImage(UIImage(systemName: "list.bullet"), for: .normal)
+    $0.tintColor = .white
+  }
+  
+  let searchButton = UIButton(type: .system).then {
+    $0.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
+    $0.tintColor = .white
+  }
+  
   // MARK: - UI
   let tempLabel = UILabel().then {
     $0.textColor = .white
@@ -72,6 +82,7 @@ final class WeatherDetailView: UIView {
     // Gradient 뒤에 깔기
     addSubview(backgroundGradient)
     backgroundGradient.snp.makeConstraints { $0.edges.equalToSuperview() }
+    
 
     addSubview(temperatureView)
     temperatureView.addArrangedSubview(tempLabel)
@@ -111,6 +122,20 @@ final class WeatherDetailView: UIView {
       $0.top.bottom.equalToSuperview()
       $0.leading.trailing.equalToSuperview().inset(20)
     }
+    
+    addSubview(listButton)
+    listButton.snp.makeConstraints {
+      $0.top.equalTo(safeAreaLayoutGuide).inset(8)
+      $0.leading.equalTo(safeAreaLayoutGuide).inset(12)
+      $0.width.height.equalTo(36)
+    }
+    
+//    addSubview(searchButton)
+//    searchButton.snp.makeConstraints {
+//      $0.top.equalTo(safeAreaLayoutGuide).inset(8)
+//      $0.trailing.equalTo(safeAreaLayoutGuide).inset(12)
+//      $0.width.height.equalTo(36)
+//    }
   }
 
   // Decoration 등록(배경 뷰)
