@@ -55,23 +55,23 @@ final class WeatherListViewReactor: Reactor {
     switch action {
     case .loadWeather:
       return loadWeatherItems(unit: currentState.tempUnit)
-//      let mockData = [
-//        WeatherListItem(weatherData: CurrentWeather(
-//          address: Location(title: "", subtitle: "", fullAddress: "서울시 강남구",
-//                            coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0)),
-//          temperature: 30, maxTemp: 35, minTemp: 30, feelsLikeTemp: 30,
-//          description: "맑음", icon: 201, hourlyForecast: [], dailyForecast: [],
-//          humidity: 0, windSpeed: 0, airQuality: .fair, sunrise: Date(), sunset: Date()
-//        )),
-//        WeatherListItem(weatherData: CurrentWeather(
-//          address: Location(title: "", subtitle: "", fullAddress: "서울시 강남구",
-//                            coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0)),
-//          temperature: 30, maxTemp: 40, minTemp: 30, feelsLikeTemp: 30,
-//          description: "흐림", icon: 601, hourlyForecast: [], dailyForecast: [],
-//          humidity: 0, windSpeed: 0, airQuality: .fair, sunrise: Date(), sunset: Date()
-//        ))
-//      ]
-//      return .just(.setWeatherItems(mockData))
+      //      let mockData = [
+      //        WeatherListItem(weatherData: CurrentWeather(
+      //          address: Location(title: "", subtitle: "", fullAddress: "서울시 강남구",
+      //                            coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0)),
+      //          temperature: 30, maxTemp: 35, minTemp: 30, feelsLikeTemp: 30,
+      //          description: "맑음", icon: 201, hourlyForecast: [], dailyForecast: [],
+      //          humidity: 0, windSpeed: 0, airQuality: .fair, sunrise: Date(), sunset: Date()
+      //        )),
+      //        WeatherListItem(weatherData: CurrentWeather(
+      //          address: Location(title: "", subtitle: "", fullAddress: "서울시 강남구",
+      //                            coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0)),
+      //          temperature: 30, maxTemp: 40, minTemp: 30, feelsLikeTemp: 30,
+      //          description: "흐림", icon: 601, hourlyForecast: [], dailyForecast: [],
+      //          humidity: 0, windSpeed: 0, airQuality: .fair, sunrise: Date(), sunset: Date()
+      //        ))
+      //      ]
+      //      return .just(.setWeatherItems(mockData))
       
     case .toggleLayout:
       let newLayoutType: LayoutType = currentState.layoutType == .grid ? .list : .grid
@@ -125,17 +125,24 @@ final class WeatherListViewReactor: Reactor {
   }
   
   private func loadWeatherItems(unit: TemperatureUnit) -> Observable<Mutation> {
-    var locations = UserDefaultsService.shared.loadSavedLocation()
+    var savedLocations = UserDefaultsService.shared.loadSavedLocation()
     
-    if locations.isEmpty {
-      locations = [SavedLocation(name: "서울", lat: 37.5665, lon: 126.9780)]
+    if savedLocations.isEmpty {
+      savedLocations = [SavedLocation(name: "서울", lat: 37.5665, lon: 126.9780)]
     }
     
-    return Observable.from(locations)
-      .flatMap {location -> Observable<WeatherListItem> in
-        let coordinate = CLLocationCoordinate2D(latitude: location.lat, longitude: location.lon)
+    return Observable.from(savedLocations)
+      .flatMap { savedLocation -> Observable<WeatherListItem> in
+        
+        let location = Location(
+          title: savedLocation.name,
+          subtitle: savedLocation.name,
+          fullAddress: savedLocation.name,
+          coordinate: Coordinate(latitude: savedLocation.lat, longitude: savedLocation.lon)
+        )
+        
         return self.weatherRepository
-          .getCurrentWeather(coordinate: coordinate, units: unit)
+          .getCurrentWeather(location: location, units: unit)
           .asObservable()
           .map {WeatherListItem(weatherData: $0)}
       }

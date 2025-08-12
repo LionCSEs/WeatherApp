@@ -11,12 +11,12 @@ import CoreLocation
 import RxMoya
 import Moya
 
-final class WeatherServiceStub: WeatherServiceType {
-  func getCurrentWeather(coordinate: CLLocationCoordinate2D, units: TemperatureUnit) -> Single<CurrentWeather> {
-    
-    let stubProvider = MoyaProvider<WeatherAPI>(stubClosure: MoyaProvider.immediatelyStub)
-    let weatherService = WeatherService(provider: stubProvider)
-    return weatherService.getCurrentWeather(coordinate: coordinate, units: units)
-    
-  }
-}
+//final class WeatherServiceStub: WeatherServiceType {
+//  func getCurrentWeather(coordinate: CLLocationCoordinate2D, units: TemperatureUnit) -> Single<CurrentWeather> {
+//    
+//    let stubProvider = MoyaProvider<WeatherAPI>(stubClosure: MoyaProvider.immediatelyStub)
+//    let weatherService = WeatherService(provider: stubProvider)
+//    return weatherService.getCurrentWeather(coordinate: coordinate, units: units)
+//    
+//  }
+//}
