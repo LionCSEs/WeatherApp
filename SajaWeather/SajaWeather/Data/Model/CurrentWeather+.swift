@@ -17,8 +17,9 @@ extension CurrentWeather {
     coordinate: CLLocationCoordinate2D // 현재 위치나 저장된 위치
   ) {
     self.address = Location(
+      title: currentWeather.name,
+      subtitle:currentWeather.name,
       fullAddress: currentWeather.name, // 임시
-      displayAddress: currentWeather.name, // 임시
       coordinate: coordinate
     )
     
