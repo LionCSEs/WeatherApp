@@ -30,7 +30,7 @@ enum GradientStyle {
       return [.cloudyAndRainyDayTop, .cloudyDayBottom]
     case .cloudyNight:
       return [.cloudyNightTop, .cloudyNightBottom]
-      case .rainyDay:
+    case .rainyDay:
       return [.cloudyAndRainyDayTop, .rainyDayBottom]
     case .rainyNight:
       return [.rainyNightTop, .rainyNightBottom]
@@ -38,11 +38,11 @@ enum GradientStyle {
       return [.snowyDayTop, .snowyDayBottom]
     case .snowyNight:
       return [.snowyNightTop, .snowyNightBottom]
-      case .thunderDay:
+    case .thunderDay:
       return [.thunderDayTop, .thunderDayBottom]
     case .thunderNight:
       return [.thunderNightTop, .thunderNightBottom]
-      case .unknown:
+    case .unknown:
       return [UIColor(red: 183/255, green: 183/255, blue: 183/255, alpha: 1), UIColor(red: 183/255, green: 183/255, blue: 183/255, alpha: 1)]
     }
   }

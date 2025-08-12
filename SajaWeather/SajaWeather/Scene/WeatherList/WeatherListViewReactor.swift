@@ -57,14 +57,14 @@ final class WeatherListViewReactor: Reactor {
                             coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0)),
           temperature: 30, maxTemp: 35, minTemp: 30, feelsLikeTemp: 30,
           description: "맑음", icon: 201, hourlyForecast: [], dailyForecast: [],
-          humidity: 0, windSpeed: 0, airQuality: .fair, sunrise: "", sunset: ""
+          humidity: 0, windSpeed: 0, airQuality: .fair, sunrise: Date(), sunset: Date()
         )),
         WeatherListItem(weatherData: CurrentWeather(
           address: Location(title: "", subtitle: "", fullAddress: "서울시 강남구",
                             coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0)),
           temperature: 30, maxTemp: 40, minTemp: 30, feelsLikeTemp: 30,
           description: "흐림", icon: 9, hourlyForecast: [], dailyForecast: [],
-          humidity: 0, windSpeed: 0, airQuality: .fair, sunrise: "", sunset: ""
+          humidity: 0, windSpeed: 0, airQuality: .fair, sunrise: Date(), sunset: Date()
         ))
       ]
       return .just(.setWeatherItems(mockData))

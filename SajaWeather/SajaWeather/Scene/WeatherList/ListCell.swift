@@ -75,7 +75,7 @@ class ListCell: UICollectionViewCell {
     layer.shadowOffset = CGSize(width: 0, height: 10)
     layer.shadowOpacity = 0.25
     layer.shadowRadius = 8
-
+    
     [backgroundImageView, currentTempLabel, locationInfoStackView, weatherIconImageView, weatherDescriptionLabel].forEach {
       contentView.addSubview($0)
     }

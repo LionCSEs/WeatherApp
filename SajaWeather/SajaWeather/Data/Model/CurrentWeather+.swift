@@ -67,21 +67,18 @@ extension CurrentWeather {
 
 extension CurrentWeather {
   var backgroundStyle: GradientStyle {
+    let isDayTime = (sunrise...sunset).contains(Date())
     switch icon {
     case 200...232:
-      return .thunderDay
-    case 300...321:
-      return .rainyDay
-    case 500...531:
-      return .rainyDay
+      return isDayTime ? .thunderDay : .thunderNight
+    case 300...321, 500...531:
+      return isDayTime ? .rainyDay : .rainyNight
     case 600...622:
-      return .snowyDay
-      case 700...781:
-      return .cloudyDay
+      return isDayTime ? .snowyDay : .snowyNight
+    case 700...781, 801...804:
+      return isDayTime ? .cloudyDay : .cloudyNight
     case 800:
-      return .clearDay
-      case 801...804:
-      return .cloudyDay
+      return isDayTime ? .clearDay : .clearNight
     default:
       return .unknown
     }

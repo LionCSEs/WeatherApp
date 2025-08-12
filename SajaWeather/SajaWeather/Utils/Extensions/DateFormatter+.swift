@@ -46,9 +46,9 @@ extension DateFormatter {
   /// - Parameter timeInterval: Unix timestamp
   /// - Returns: "6:30AM" 형식의 문자열
   /// - Example: `DateFormatter.formatTime(1691456400)` -> "6:30AM"
-  static func formatTime(_ timeInterval: TimeInterval) -> String {
+  static func formatTime(_ timeInterval: TimeInterval) -> Date {
     let date = Date(timeIntervalSince1970: timeInterval)
-    return timeFormatter.string(from: date)
+    return date //timeFormatter.string(from: date)
   }
   
   /// Unix timestamp를 일별 예보 형식으로 변환
