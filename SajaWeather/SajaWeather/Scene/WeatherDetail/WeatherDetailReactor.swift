@@ -60,15 +60,22 @@ final class WeatherDetailReactor : Reactor {
           }
 
       case let .requestWeather(units):
-        let resolveLocation: Observable<CLLocation> = {
-          if let loc = currentState.location { return .just(loc) }
+        let resolveLocation: Observable<Location> = {
+          // 현재 위치가 있으면 역지오코딩으로 Location 생성
+          if let location = currentState.location {
+            return locationService.reverseGeocode(location)
+          }
+          // 현재 위치가 없으면 위치 가져온 후 역지오코딩
           return locationService.getLocation()
+            .flatMap { [locationService] clLocation in
+              locationService.reverseGeocode(clLocation)
+            }
         }()
 
         let request = resolveLocation
-          .flatMapLatest { [weatherRepository] loc in
+          .flatMapLatest { [weatherRepository] location in
             weatherRepository.getCurrentWeather(
-              coordinate: loc.coordinate,
+              location: location,
               units: units
             ).asObservable()
           }
