@@ -64,3 +64,26 @@ extension CurrentWeather {
     }
   }
 }
+
+extension CurrentWeather {
+  var backgroundStyle: GradientStyle {
+    switch icon {
+    case 200...232:
+      return .thunderDay
+    case 300...321:
+      return .rainyDay
+    case 500...531:
+      return .rainyDay
+    case 600...622:
+      return .snowyDay
+      case 700...781:
+      return .cloudyDay
+    case 800:
+      return .clearDay
+      case 801...804:
+      return .cloudyDay
+    default:
+      return .unknown
+    }
+  }
+}
