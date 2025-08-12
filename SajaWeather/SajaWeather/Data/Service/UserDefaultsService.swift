@@ -114,4 +114,14 @@ class UserDefaultsService {
   func saveTemperatureUnit(_ temp: String) {
     defaults.set(temp, forKey: UserDefaultsKey.temperatureUnit)
   }
+  
+  // MARK: - 섭씨/화씨 관리 (타입 세이프)
+  
+  func loadTemperatureUnitEnum() -> TemperatureUnit {
+    TemperatureUnit(rawValue: loadTemperatureUnit()) ?? .celsius
+  }
+  
+  func saveTemperatureUnit(_ unit: TemperatureUnit) {
+    defaults.set(unit.rawValue, forKey: UserDefaultsKey.temperatureUnit)
+  }
 }

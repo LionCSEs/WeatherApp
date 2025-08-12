@@ -51,14 +51,20 @@ final class LocationService: LocationServiceType {
 // MARK: - CLLocationManager (Reactive)
 
 extension Reactive where Base: CLLocationManager {
+  // delegate 메서드 (콜백)으로만 소통하는 CLLocationManager
+  // 매니저가 delegate 메서드를 호출하면 프록시가 호출을 Rx 이벤트로 변환
   var delegate: DelegateProxy<CLLocationManager, CLLocationManagerDelegate> {
     return RxCLLocationManagerDelegateProxy.proxy(for: base)
   }
   
+  // delegate를 프록시에 설치
   func setDelegate(_ delegate: CLLocationManagerDelegate) -> Disposable {
     return RxCLLocationManagerDelegateProxy.installForwardDelegate(delegate, retainDelegate: false, onProxyForObject: base)
   }
   
+  // 현재 권한 상태를 확인
+  // 확인됐다면 -> 바로 내보냄
+  // 아직 권한을 묻지 않았다면(.notDetermined라면) -> 권한 팝업을 띄움. 권한이 바뀌었다는 콜백이 들어오면 딱 한번 값을 내보내고 종료
   func requestWhenInUseAuthorization() -> Observable<CLAuthorizationStatus> {
     let requestAuthorization = delegate
       .methodInvoked(#selector(CLLocationManagerDelegate.locationManagerDidChangeAuthorization(_:)))
@@ -68,6 +74,7 @@ extension Reactive where Base: CLLocationManager {
         base.requestWhenInUseAuthorization()
       })
       .take(1)
+    
     return Observable
       .create { [base] observer in
         observer.on(.next(base.authorizationStatus))
