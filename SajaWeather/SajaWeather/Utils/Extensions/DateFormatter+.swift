@@ -43,17 +43,23 @@ extension DateFormatter {
   }
   
   // MARK: - Display helpers
-  static func hourString(from date: Date) -> String {
-    hourlyFormatter.string(from: date)
+  static func hourString(from date: Date, timeZone: TimeZone) -> String {
+    hourlyFormatter.timeZone = timeZone
+    return hourlyFormatter.string(from: date)
   }
   
-  static func dayKoString(from date: Date) -> String {
-    if calendar.isDateInToday(date) { return "오늘" }
+  static func dayKoString(from date: Date, timeZone: TimeZone) -> String {
+    var cal = Calendar(identifier: .gregorian)
+    cal.timeZone = timeZone
+    if cal.isDate(date, equalTo: Date(), toGranularity: .day) { return "오늘" }
+    dayKoFormatter.timeZone = timeZone
     return dayKoFormatter.string(from: date)
   }
   
-  static func timeParts(from date: Date) -> (time: String, ampm: String) {
-    (timeOnlyFormatter.string(from: date), ampmFormatter.string(from: date))
+  static func timeParts(from date: Date, timeZone: TimeZone) -> (time: String, ampm: String) {
+    timeOnlyFormatter.timeZone = timeZone
+    ampmFormatter.timeZone = timeZone
+    return (timeOnlyFormatter.string(from: date), ampmFormatter.string(from: date))
   }
   
   // MARK: - Daytime check
@@ -63,7 +69,9 @@ extension DateFormatter {
   }
   
   // MARK: - Utils
-  static func isSameDay(_ a: Date, _ b: Date) -> Bool {
-    calendar.isDate(a, inSameDayAs: b)
+  static func isSameDay(_ a: Date, _ b: Date, timeZone: TimeZone) -> Bool {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = timeZone
+    return calendar.isDate(a, inSameDayAs: b)
   }
 }
