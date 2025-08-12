@@ -14,14 +14,9 @@ extension CurrentWeather {
     hourlyForecast: HourlyForecastResponseDTO,
     dailyForecast: DailyForecastResponseDTO,
     airQuality: AirQualityResponseDTO,
-    coordinate: CLLocationCoordinate2D // 현재 위치나 저장된 위치
+    location: Location
   ) {
-    self.address = Location(
-      title: currentWeather.name,
-      subtitle:currentWeather.name,
-      fullAddress: currentWeather.name, // 임시
-      coordinate: coordinate
-    )
+    self.address = location
     
     let main = currentWeather.main
     self.temperature = Int(main.temp.rounded())

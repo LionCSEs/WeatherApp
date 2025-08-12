@@ -13,6 +13,7 @@ import RxCocoa
 // 의존성 주입을 위한 추상화 - Stub을 써서 가짜 위치를 반환할 수도 있게
 protocol LocationServiceType {
   func getLocation() -> Observable<CLLocation>
+  func reverseGeocode(_ location: CLLocation) -> Observable<Location>
 }
 
 final class LocationService: LocationServiceType {
@@ -46,6 +47,55 @@ final class LocationService: LocationServiceType {
         }
       }
   }
+  
+  func reverseGeocode(_ location: CLLocation) -> Observable<Location> {
+      return Observable.create { observer in
+        let geocoder = CLGeocoder()
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+          if let error = error {
+            // 실패해도 기본값으로 Location 생성
+            let fallbackLocation = Location(
+              title: "현재 위치",
+              subtitle: "현재 위치",
+              fullAddress: "현재 위치",
+              coordinate: location.coordinate
+            )
+            observer.onNext(fallbackLocation)
+            observer.onCompleted()
+            return
+          }
+          
+          guard let placemark = placemarks?.first else {
+            let fallbackLocation = Location(
+              title: "현재 위치",
+              subtitle: "현재 위치",
+              fullAddress: "현재 위치",
+              coordinate: location.coordinate
+            )
+            observer.onNext(fallbackLocation)
+            observer.onCompleted()
+            return
+          }
+          
+          let resolvedLocation = Location(
+            title: placemark.subLocality ?? placemark.locality ?? "현재 위치", // 상암동
+            subtitle: placemark.locality ?? placemark.administrativeArea ?? "현재 위치",
+            fullAddress: [
+              placemark.locality ?? placemark.administrativeArea,  // "서울특별시"
+              placemark.subLocality  // "상암동"
+            ].compactMap { $0 }.joined(separator: " "),  // "서울특별시 상암동"
+            coordinate: location.coordinate
+          )
+          
+          observer.onNext(resolvedLocation)
+          observer.onCompleted()
+        }
+        
+        return Disposables.create {
+          geocoder.cancelGeocode()
+        }
+      }
+    }
 }
 
 // MARK: - CLLocationManager (Reactive)

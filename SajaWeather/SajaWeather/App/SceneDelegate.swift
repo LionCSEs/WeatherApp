@@ -24,12 +24,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     let appFlow = AppFlow(window: window)
     
-    let temp: Coordinate = CLLocationCoordinate2D(latitude: 33.55766, longitude: 126.8112)
+    // 임시 Location 생성 (coordinate 대신)
+    let tempLocation = Location(
+      title: "제주시",
+      subtitle: "제주특별자치도",
+      fullAddress: "제주특별자치도 제주시",
+      coordinate: CLLocationCoordinate2D(latitude: 33.55766, longitude: 126.8112)
+    )
     
     coordinator.coordinate(
       flow: appFlow,
-      with: OneStepper(withSingleStep: AppStep.weatherDetailIsRequired(temp))
+      with: OneStepper(withSingleStep: AppStep.weatherDetailIsRequired(tempLocation))
     )
+
     
     self.window = window
   }

@@ -12,7 +12,7 @@ import Moya
 import CoreLocation
 
 protocol WeatherServiceType {
-  func getCurrentWeather(coordinate: CLLocationCoordinate2D, units: TemperatureUnit) -> Single<CurrentWeather>
+  func getCurrentWeather(location: Location, units: TemperatureUnit) -> Single<CurrentWeather>
 }
 
 final class WeatherService: WeatherServiceType {
@@ -29,7 +29,8 @@ final class WeatherService: WeatherServiceType {
     )
   }
   
-  func getCurrentWeather(coordinate: CLLocationCoordinate2D, units: TemperatureUnit) -> Single<CurrentWeather> {
+  func getCurrentWeather(location: Location, units: TemperatureUnit) -> Single<CurrentWeather> {
+    let coordinate = location.coordinate
     let lat = coordinate.latitude
     let lon = coordinate.longitude
     
@@ -68,7 +69,7 @@ final class WeatherService: WeatherServiceType {
         hourlyForecast: hourly,
         dailyForecast: daily,
         airQuality: airQuality,
-        coordinate: coordinate
+        location: location
       )
     }
     .catch { error in

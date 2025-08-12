@@ -17,7 +17,7 @@ class WeatherListViewController: BaseViewController, View {
   // 스크롤이 멈출 때마다 중앙 아이템의 IndexPath를 전달할 Subject
   let centeredIndexPathSubject = PublishSubject<IndexPath>()
   var dataSource: UICollectionViewDiffableDataSource<WeatherListSection, WeatherListItem>!
- // var disposeBag = DisposeBag()
+  // var disposeBag = DisposeBag()
   
   private var gradientBackground = GradientView(style: .unknown)
   
@@ -61,10 +61,16 @@ class WeatherListViewController: BaseViewController, View {
     collectionView.rx.itemSelected
       .map { indexPath in
         if let item = self.dataSource.itemIdentifier(for: indexPath) {
-          let location = item.weatherData.address.coordinate
+          let location = item.weatherData.address
           return AppStep.weatherDetailIsRequired(location)
         }
-        return AppStep.weatherDetailIsRequired(CLLocationCoordinate2D(latitude: 37.5665, longitude: 126.9780))
+        let defaultLocation = Location(
+          title: "서울",
+          subtitle: "서울특별시",
+          fullAddress: "서울특별시 서울",
+          coordinate: CLLocationCoordinate2D(latitude: 37.5665, longitude: 126.9780)
+        )
+        return AppStep.weatherDetailIsRequired(defaultLocation)
       }
       .bind(to: steps)
       .disposed(by: disposeBag)

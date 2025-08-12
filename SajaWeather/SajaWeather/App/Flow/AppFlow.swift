@@ -41,18 +41,18 @@ final class AppFlow: Flow {
     guard let step = step as? AppStep else { return .none }
     
     switch step {
-    case .weatherDetailIsRequired(let coordinate):
-      return navigateToWeatherDetail(coordinate: coordinate)
+    case .weatherDetailIsRequired(let location):
+      return navigateToWeatherDetail(location: location)
     case .weatherListIsRequired:
       return navigateToWeatherList()
     case .searchIsRequired:
       return navigateToSearch()
-    case .searchIsDismissed(let coordinate):
-      return dismissSearchAndUpdateWeather(coordinate: coordinate)
+    case .searchIsDismissed(let location):
+      return dismissSearchAndUpdateWeather(location: location)
     }
   }
   
-  private func navigateToWeatherDetail(coordinate: Coordinate) -> FlowContributors {
+  private func navigateToWeatherDetail(location: Location) -> FlowContributors {
     
     // TODO: WeatherDetail Reactor와 ViewController로 수정
     let reactor = WeatherDetailReactor(
@@ -122,12 +122,12 @@ final class AppFlow: Flow {
      ))
   }
   
-  private func dismissSearchAndUpdateWeather(coordinate: Coordinate?) -> FlowContributors {
+  private func dismissSearchAndUpdateWeather(location: Location?) -> FlowContributors {
     rootViewController.dismiss(animated: true) { [weak self] in
-      if let coordinate = coordinate {
-        // 선택된 위치로 WeatherDetail 업데이트
-        _ = self?.navigateToWeatherDetail(coordinate: coordinate)
-      }
+      if let location = location {
+            // 선택된 위치로 WeatherDetail 업데이트
+            _ = self?.navigateToWeatherDetail(location: location)
+          }
       // coordinate가 nil이면 그냥 dismiss만 (선택하지 않고 취소
     }
     return .none

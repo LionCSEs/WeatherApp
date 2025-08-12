@@ -9,8 +9,8 @@ import Foundation
 import RxFlow
 
 enum AppStep: Step {
-  case weatherDetailIsRequired(Coordinate)
+  case weatherDetailIsRequired(Location)
   case weatherListIsRequired
   case searchIsRequired
-  case searchIsDismissed(Coordinate?)
+  case searchIsDismissed(Location?)
 }
