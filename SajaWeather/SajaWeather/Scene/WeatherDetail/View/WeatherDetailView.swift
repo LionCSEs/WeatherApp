@@ -34,11 +34,6 @@ final class WeatherDetailView: UIView {
     $0.alignment = .center
     $0.spacing = 8
   }
-
-//  private let weatherIconView = UIImageView().then {
-//    $0.image = UIImage(named: "Day Clear")
-//    $0.contentMode = .scaleAspectFit
-//  }
   
   private let weatherIconView = LottieAnimationView().then {
     $0.contentMode = .scaleAspectFit

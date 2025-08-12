@@ -22,4 +22,5 @@ struct CurrentWeather {
   let airQuality: AirQuality
   let sunrise: Date
   let sunset: Date
+  let timeZone: TimeZone
 }

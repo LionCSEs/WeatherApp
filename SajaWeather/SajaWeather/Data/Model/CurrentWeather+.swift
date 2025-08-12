@@ -25,8 +25,13 @@ extension CurrentWeather {
     
     let main = currentWeather.main
     self.temperature = Int(main.temp.rounded())
-    self.maxTemp = Int(main.tempMax.rounded())
-    self.minTemp = Int(main.tempMin.rounded())
+    if let today = dailyForecast.list.first {
+      self.maxTemp = Int(today.temp.max.rounded())
+      self.minTemp = Int(today.temp.min.rounded())
+    } else {
+      self.maxTemp = Int(main.tempMax.rounded())
+      self.minTemp = Int(main.tempMin.rounded())
+    }
     self.feelsLikeTemp = Int(main.feelsLike.rounded())
     self.humidity = main.humidity
     self.windSpeed = Int(currentWeather.wind.speed.rounded())
@@ -38,6 +43,8 @@ extension CurrentWeather {
     // 현재 일출/일몰
     self.sunrise = Date(timeIntervalSince1970: TimeInterval(currentWeather.sys.sunrise))
     self.sunset  = Date(timeIntervalSince1970: TimeInterval(currentWeather.sys.sunset))
+    
+    self.timeZone = TimeZone(secondsFromGMT: currentWeather.timezone) ?? .current
     
     // 대기질
     let aqiValue = airQuality.list.first?.main.aqi ?? 1

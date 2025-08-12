@@ -185,13 +185,15 @@ class GridCell: UICollectionViewCell {
   // MARK: - Helpers
   /// 해당 시(hourDate)와 같은 날의 일출/일몰 우선 사용, 없으면 현재값 fallback
   private func sunBounds(for hourDate: Date) -> (sunrise: Date, sunset: Date) {
-    if let cw = currentWeather,
-       let match = cw.dailyForecast.first(where: { DateFormatter.isSameDay($0.date, hourDate) }) {
+    guard let currentWeather = currentWeather else {
+      let now = Date(); return (now, now)
+    }
+    if let match = currentWeather.dailyForecast.first(where: {
+      DateFormatter.isSameDay($0.date, hourDate, timeZone: currentWeather.timeZone)
+    }) {
       return (match.sunrise, match.sunset)
     }
-    if let cw = currentWeather { return (cw.sunrise, cw.sunset) }
-    let now = Date()
-    return (now, now)
+    return (currentWeather.sunrise, currentWeather.sunset)
   }
 }
 
@@ -204,10 +206,11 @@ extension GridCell: UICollectionViewDataSource {
 
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GridCell.hostReuseID, for: indexPath)
-
+    guard let currentWeather = currentWeather else { return cell }
+    
     let hour = hourlyForecasts[indexPath.item]
-    let (sr, ss) = sunBounds(for: hour.date)
-    let isDay = DateFormatter.isDayTime(at: hour.date, sunrise: sr, sunset: ss)
+    let (sunrise, sunset) = sunBounds(for: hour.date)
+    let isDay = DateFormatter.isDayTime(at: hour.date, sunrise: sunrise, sunset: sunset)
 
     // SwiftUI WeatherHourCell 호스팅
     cell.contentConfiguration = UIHostingConfiguration {
@@ -216,7 +219,8 @@ extension GridCell: UICollectionViewDataSource {
         icon: hour.icon,
         temp: hour.temperature,
         humidity: hour.humidity,
-        isDayTime: isDay
+        isDayTime: isDay,
+        timeZone: currentWeather.timeZone
       )
       .background(Color.clear)
     }.margins(.all, 0)

@@ -99,21 +99,21 @@ final class WeatherDetailDataSourceProvider {
   // 시간별 셀 등록 로직
   private func makeHourlyCellRegistration() -> UICollectionView.CellRegistration<UICollectionViewCell, WeatherDetailItem> {
     return UICollectionView.CellRegistration<UICollectionViewCell, WeatherDetailItem> { [weak self] cell, _, item in
-      guard case let .hourlyWeather(idx) = item,
-            let h = self?.currentWeather?.hourlyForecast[safe: idx],
-            let sunrise = self?.currentWeather?.sunrise,
-            let sunset = self?.currentWeather?.sunset
+      guard case let .hourlyWeather(index) = item,
+            let currentWeather = self?.currentWeather,
+            let hourly = currentWeather.hourlyForecast[safe: index]
       else { return }
       
-      let isDayTime = DateFormatter.isDayTime(at: h.date, sunrise: sunrise, sunset: sunset)
+      let isDayTime = DateFormatter.isDayTime(at: hourly.date, sunrise: currentWeather.sunrise, sunset: currentWeather.sunset)
       
       cell.contentConfiguration = UIHostingConfiguration {
         WeatherHourCell(
-          date: h.date,
-          icon: h.icon,
-          temp: h.temperature,
-          humidity: h.humidity,
-          isDayTime: isDayTime
+          date: hourly.date,
+          icon: hourly.icon,
+          temp: hourly.temperature,
+          humidity: hourly.humidity,
+          isDayTime: isDayTime,
+          timeZone: currentWeather.timeZone
         )
         .background(Color.clear)
       }.margins(.all, 0)
@@ -123,11 +123,20 @@ final class WeatherDetailDataSourceProvider {
   
   // 일별 셀 등록 로직
   private func makeDailyCellRegistration() -> UICollectionView.CellRegistration<UICollectionViewCell, WeatherDetailItem> {
-    return UICollectionView.CellRegistration<UICollectionViewCell, WeatherDetailItem> { [weak self] cell, _, item in
-      guard case let .dailyWeather(idx) = item, let d = self?.currentWeather?.dailyForecast[safe: idx] else { return }
+    UICollectionView.CellRegistration { [weak self] cell, _, item in
+      guard case let .dailyWeather(idx) = item,
+            let currentWeather = self?.currentWeather,
+            let daily = currentWeather.dailyForecast[safe: idx] else { return }
       cell.contentConfiguration = UIHostingConfiguration {
-        WeatherDayCell(date: d.date, humidity: d.humidity, icon: d.icon, maxTemp: d.maxTemp, minTemp: d.minTemp)
-          .background(Color.clear)
+        WeatherDayCell(
+          date: daily.date,
+          humidity: daily.humidity,
+          icon: daily.icon,
+          maxTemp: daily.maxTemp,
+          minTemp: daily.minTemp,
+          timeZone: currentWeather.timeZone
+        )
+        .background(Color.clear)
       }.margins(.all, 0)
       cell.backgroundColor = .clear
     }
@@ -157,11 +166,15 @@ final class WeatherDetailDataSourceProvider {
   
   // 일출/일몰 셀 등록 로직
   private func makeSunCycleCellRegistration() -> UICollectionView.CellRegistration<UICollectionViewCell, WeatherDetailItem> {
-    return UICollectionView.CellRegistration<UICollectionViewCell, WeatherDetailItem> { [weak self] cell, _, _ in
-      let cw = self?.currentWeather
+    UICollectionView.CellRegistration { [weak self] cell, _, _ in
+      guard let currentWeather = self?.currentWeather else { return }
       cell.contentConfiguration = UIHostingConfiguration {
-        WeatherSunCycleRow(sunrise: cw?.sunrise ?? Date(), sunset: cw?.sunset ?? Date())
-          .background(Color.clear)
+        WeatherSunCycleRow(
+          sunrise: currentWeather.sunrise,
+          sunset:  currentWeather.sunset,
+          timeZone: currentWeather.timeZone
+        )
+        .background(Color.clear)
       }.margins(.all, 0)
       cell.backgroundColor = .clear
     }
