@@ -30,6 +30,16 @@ final class WeatherDetailViewController: BaseViewController, View {
     dataSourceProvider.applyInitialSnapshot()
     scrollAnimator = contentView.makeScrollAnimator()
     bindScroll()
+    
+    contentView.listButton.rx.tap
+      .map { AppStep.weatherListIsRequired }
+      .bind(to: steps)
+      .disposed(by: disposeBag)
+    
+    contentView.searchButton.rx.tap
+      .map { AppStep.searchIsRequired }
+      .bind(to: steps)
+      .disposed(by: disposeBag)
   }
   
   func bind(reactor: WeatherDetailReactor) {
