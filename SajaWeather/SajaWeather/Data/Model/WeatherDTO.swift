@@ -13,6 +13,7 @@ struct CurrentWeatherResponseDTO: Codable {
   let main: MainWeatherDTO
   let wind: WindDTO
   let sys: SysDTO
+  let timezone: Int
   let name: String
 }
 
@@ -31,7 +32,12 @@ struct HourlyItemDTO: Codable {
 // MARK: - Daily Forecast Response
 
 struct DailyForecastResponseDTO: Codable {
+  let city: CityDTO?
   let list: [DailyItemDTO]
+}
+
+struct CityDTO: Codable {
+  let timezone: Int?
 }
 
 struct DailyItemDTO: Codable {

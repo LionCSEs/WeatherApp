@@ -13,10 +13,11 @@ struct WeatherDayCell: View {
   let icon: Int // id or cod
   let maxTemp: Int
   let minTemp: Int
+  let timeZone: TimeZone
   
   var body: some View {
     HStack {
-      Text(DateFormatter.dayKoString(from: date))
+      Text(DateFormatter.dayKoString(from: date, timeZone: timeZone))
         .font(.system(size: 14))
         .foregroundStyle(.white)
       
@@ -47,6 +48,6 @@ struct WeatherDayCell: View {
 }
 
 #Preview {
-  WeatherDayCell(date: Date(), humidity: 60, icon: 531, maxTemp: 31, minTemp: 27)
-  WeatherDayCell(date: Date()+86400, humidity: 10, icon: 800, maxTemp: 31, minTemp: 27)
+  WeatherDayCell(date: Date(), humidity: 60, icon: 531, maxTemp: 31, minTemp: 27, timeZone: .current)
+  WeatherDayCell(date: Date()+86400, humidity: 10, icon: 800, maxTemp: 31, minTemp: 27, timeZone: .current)
 }

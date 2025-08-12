@@ -19,15 +19,7 @@ class GridCell: UICollectionViewCell {
   private var currentWeather: CurrentWeather?
   private var hourlyForecasts: [HourlyForecast] = []
   
-  // 임시 데이터 소스
-//  private var hourlyForecasts: [HourlyForecast] = [HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5)]
-  
   // MARK: - UI Elements
-  
-//  private let mainWeatherImageView = UIImageView().then {
-//    $0.contentMode = .scaleAspectFit
-//    $0.image = UIImage(named: "Day Clear")
-//  }
   
   private let mainWeatherImageView = LottieAnimationView().then {
     $0.contentMode = .scaleAspectFit
@@ -84,7 +76,7 @@ class GridCell: UICollectionViewCell {
   
   let layout = UICollectionViewFlowLayout().then {
     $0.scrollDirection = .horizontal
-    $0.itemSize = CGSize(width: 70, height: 140)
+    $0.itemSize = CGSize(width: 55, height: 120)
     $0.minimumLineSpacing = 12
   }
   
@@ -135,7 +127,7 @@ class GridCell: UICollectionViewCell {
     cardBackgroundView.addSubview(mainStackView)
     
     mainWeatherImageView.snp.makeConstraints {
-      $0.height.equalTo(180).priority(999) // 이미지 크기에 맞게 조절
+      $0.height.equalTo(240).priority(999) // 이미지 크기에 맞게 조절
       $0.top.equalToSuperview()
       $0.centerX.equalToSuperview()
     }
@@ -146,9 +138,8 @@ class GridCell: UICollectionViewCell {
     }
     
     mainStackView.snp.makeConstraints {
-      $0.top.equalToSuperview().inset(70).priority(999)
       $0.leading.trailing.equalToSuperview().inset(20)
-      $0.bottom.equalToSuperview().inset(30).priority(999)
+      $0.top.bottom.equalToSuperview().inset(30).priority(999)
     }
     
     tempRangeLabel.snp.makeConstraints {
@@ -185,8 +176,6 @@ class GridCell: UICollectionViewCell {
     tempRangeLabel.text  = "↑\(data.maxTemp)° ↓\(data.minTemp)°"
     feelsLikeLabel.text  = "체감 온도 \(data.feelsLikeTemp)°"
     
-    // 메인 일러스트 (옵션)
-//    mainWeatherImageView.image = UIImage(named: topWeatherIllustrationName(for: data.icon, isDayTime: data.isDayNow))
     mainWeatherImageView.animation = LottieAnimation.named(topWeatherIllustrationName(for: data.icon, isDayTime: data.isDayNow))
     mainWeatherImageView.play()
     
@@ -196,13 +185,15 @@ class GridCell: UICollectionViewCell {
   // MARK: - Helpers
   /// 해당 시(hourDate)와 같은 날의 일출/일몰 우선 사용, 없으면 현재값 fallback
   private func sunBounds(for hourDate: Date) -> (sunrise: Date, sunset: Date) {
-    if let cw = currentWeather,
-       let match = cw.dailyForecast.first(where: { DateFormatter.isSameDay($0.date, hourDate) }) {
+    guard let currentWeather = currentWeather else {
+      let now = Date(); return (now, now)
+    }
+    if let match = currentWeather.dailyForecast.first(where: {
+      DateFormatter.isSameDay($0.date, hourDate, timeZone: currentWeather.timeZone)
+    }) {
       return (match.sunrise, match.sunset)
     }
-    if let cw = currentWeather { return (cw.sunrise, cw.sunset) }
-    let now = Date()
-    return (now, now)
+    return (currentWeather.sunrise, currentWeather.sunset)
   }
 }
 
@@ -215,10 +206,11 @@ extension GridCell: UICollectionViewDataSource {
 
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GridCell.hostReuseID, for: indexPath)
-
+    guard let currentWeather = currentWeather else { return cell }
+    
     let hour = hourlyForecasts[indexPath.item]
-    let (sr, ss) = sunBounds(for: hour.date)
-    let isDay = DateFormatter.isDayTime(at: hour.date, sunrise: sr, sunset: ss)
+    let (sunrise, sunset) = sunBounds(for: hour.date)
+    let isDay = DateFormatter.isDayTime(at: hour.date, sunrise: sunrise, sunset: sunset)
 
     // SwiftUI WeatherHourCell 호스팅
     cell.contentConfiguration = UIHostingConfiguration {
@@ -227,7 +219,8 @@ extension GridCell: UICollectionViewDataSource {
         icon: hour.icon,
         temp: hour.temperature,
         humidity: hour.humidity,
-        isDayTime: isDay
+        isDayTime: isDay,
+        timeZone: currentWeather.timeZone
       )
       .background(Color.clear)
     }.margins(.all, 0)

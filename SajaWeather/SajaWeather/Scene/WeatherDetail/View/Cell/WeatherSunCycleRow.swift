@@ -11,9 +11,10 @@ struct SunCycleCell: View {
   let icon: String
   let title: String
   let date: Date
+  let timeZone: TimeZone
   
   private var parts: (time: String, ampm: String) {
-    return DateFormatter.timeParts(from: date)
+    DateFormatter.timeParts(from: date, timeZone: timeZone)
   }
   
   var body: some View {
@@ -42,16 +43,17 @@ struct SunCycleCell: View {
 struct WeatherSunCycleRow: View {
   let sunrise: Date
   let sunset: Date
+  let timeZone: TimeZone
 
   var body: some View {
     HStack(spacing: 40) {
-      SunCycleCell(icon: "sunrise.fill", title: "일출", date: sunrise)
-      SunCycleCell(icon: "sunset.fill",  title: "일몰", date: sunset)
+      SunCycleCell(icon: "sunrise.fill", title: "일출", date: sunrise, timeZone: timeZone)
+      SunCycleCell(icon: "sunset.fill",  title: "일몰", date: sunset, timeZone: timeZone)
     }
   }
 }
 
 #Preview {
-  WeatherSunCycleRow(sunrise: Date(), sunset: Date().addingTimeInterval(60*60*12+375))
+  WeatherSunCycleRow(sunrise: Date(), sunset: Date().addingTimeInterval(60*60*12+375), timeZone: .current)
     .padding()
 }

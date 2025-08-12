@@ -45,12 +45,6 @@ class ListCell: UICollectionViewCell {
     $0.text = "0°C / 10°C"
   }
   
-  // 우상단 날씨 아이콘
-//  private let weatherIconImageView = UIImageView().then {
-//    $0.contentMode = .scaleAspectFit
-//    $0.image = UIImage(systemName: "sun.max.fill")
-//  }
-  
   private let weatherIconImageView = LottieAnimationView().then {
     $0.contentMode = .scaleAspectFit
     $0.loopMode = .loop
@@ -117,7 +111,6 @@ class ListCell: UICollectionViewCell {
     currentTempLabel.text = tempUnit == .celsius ? "\(data.temperature)°C" : "\(data.temperature)°F"
     locationLabel.text = data.address.fullAddress
     detailTempLabel.text = "↑\(data.maxTemp)°↓\(data.minTemp)° · 체감 온도 \(data.feelsLikeTemp)°"
-//    weatherIconImageView.image = UIImage(systemName: "sun.max.fill")
     weatherIconImageView.animation = LottieAnimation
       .named(topWeatherIllustrationName(for: data.icon, isDayTime: data.isDayNow))
     weatherIconImageView.play()

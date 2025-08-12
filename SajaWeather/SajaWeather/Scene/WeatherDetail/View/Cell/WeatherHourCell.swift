@@ -13,11 +13,12 @@ struct WeatherHourCell: View {
   let temp: Int
   let humidity: Int
   let isDayTime: Bool
+  let timeZone: TimeZone
   
   var body: some View {
     VStack(spacing: 6) {
-      Text(DateFormatter.hourString(from: date))
-        .font(.system(size: 12, weight: .medium))
+      Text(DateFormatter.hourString(from: date, timeZone: timeZone))
+        .font(.system(size: 12, weight: .regular))
         .foregroundStyle(.white)
       
       Image(weatherIcon(for: icon, isDayTime: isDayTime))
@@ -45,5 +46,12 @@ struct WeatherHourCell: View {
 }
 
 #Preview {
-  WeatherHourCell(date: Date(), icon: 300, temp: 26, humidity: 10, isDayTime: true)
+  WeatherHourCell(
+    date: Date(),
+    icon: 300,
+    temp: 26,
+    humidity: 10,
+    isDayTime: true,
+    timeZone: .current
+  )
 }

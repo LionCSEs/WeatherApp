@@ -112,3 +112,22 @@ final class WeatherDetailReactor : Reactor {
       return newState
     }
   }
+  
+  func reduce(state: State, mutation: Mutation) -> State {
+    var newState = state
+    switch mutation {
+    case .setLocation(let loc):
+      newState.location = loc
+    case .setCurrentWeather(let cw):
+      newState.currentWeather = cw
+    case .setLoading(let loading):
+      newState.isLoading = loading
+    case .setError(let err):
+      newState.error = err
+      newState.isLoading = false
+    case .clearError:
+      newState.error = nil
+    }
+    return newState
+  }
+}
