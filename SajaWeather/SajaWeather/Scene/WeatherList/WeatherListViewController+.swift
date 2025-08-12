@@ -22,14 +22,21 @@ extension WeatherListViewController {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GridCell.identifier, for: indexPath) as? GridCell else {
           return UICollectionViewCell()
         }
-        cell.configure(with: weatherItem.weatherData)
+        cell
+          .configure(
+            with: weatherItem.weatherData,
+            tempUnit: self.reactor?.currentState.tempUnit ?? .celsius
+          )
         return cell
         
       case .list:
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ListCell.identifier, for: indexPath) as? ListCell else {
           return UICollectionViewCell()
         }
-        cell.configure(with: weatherItem.weatherData)
+        cell.configure(
+          with: weatherItem.weatherData,
+          tempUnit: self.reactor?.currentState.tempUnit ?? .celsius
+        )
         return cell
       case .none:
         return UICollectionViewCell()
@@ -68,6 +75,18 @@ extension WeatherListViewController {
     let section = NSCollectionLayoutSection(group: group)
     section.orthogonalScrollingBehavior = .groupPagingCentered
     section.interGroupSpacing = UIScreen.main.bounds.width * 0.06
+    
+    // 수평 스크롤 시 호출될 핸들러 설정
+    section.visibleItemsInvalidationHandler = { [weak self] (visibleItems, scrollOffset, layoutEnvironment) in
+      // 스크롤이 멈추었을 때만 중앙 IndexPath를 찾음
+      // isDragging, isDecelerating을 통해 스크롤이 끝났는지 확인
+      guard let self = self, !self.collectionView.isDragging, !self.collectionView.isDecelerating else { return }
+      
+      // 중앙 IndexPath를 찾아서 Subject로 전달
+      if let centerIndexPath = self.collectionView.centerIndexPath() {
+        self.centeredIndexPathSubject.onNext(centerIndexPath)
+      }
+    }
     
     return section
   }

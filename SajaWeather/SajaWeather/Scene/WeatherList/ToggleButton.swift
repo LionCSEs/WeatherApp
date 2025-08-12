@@ -1,5 +1,5 @@
 //
-//  ListToggleButton.swift
+//  ToggleButton.swift
 //  SajaWeather
 //
 //  Created by estelle on 8/11/25.

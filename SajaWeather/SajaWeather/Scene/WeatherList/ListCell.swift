@@ -16,7 +16,6 @@ class ListCell: UICollectionViewCell {
   private let backgroundImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFit
     $0.clipsToBounds = true
-    $0.image = UIImage(named: "testImg")
   }
   
   // 좌상단 현재 온도
@@ -106,9 +105,9 @@ class ListCell: UICollectionViewCell {
     }
   }
   
-  func configure(with data: CurrentWeather) {
-    //backgroundImageView.image = UIImage(named: data)
-    currentTempLabel.text = "\(data.temperature)°c"
+  func configure(with data: CurrentWeather, tempUnit: TemperatureUnit) {
+    backgroundImageView.image = UIImage(named: data.backgroundStyle.imageName)
+    currentTempLabel.text = tempUnit == .celsius ? "\(data.temperature)°C" : "\(data.temperature)°F"
     locationLabel.text = data.address.fullAddress
     detailTempLabel.text = "↑\(data.maxTemp)°↓\(data.minTemp)° · 체감 온도 \(data.feelsLikeTemp)°"
     weatherIconImageView.image = UIImage(systemName: "sun.max.fill")

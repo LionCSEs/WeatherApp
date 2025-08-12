@@ -158,14 +158,14 @@ class GridCell: UICollectionViewCell {
     }
   }
   
-  func configure(with data: CurrentWeather) {
+  func configure(with data: CurrentWeather, tempUnit: TemperatureUnit) {
     locationLabel.text = data.address.fullAddress
     // mainWeatherImageView.image = UIImage(named: data)
-    currentTempLabel.text = "\(data.temperature)°c"
+    currentTempLabel.text = tempUnit == .celsius ? "\(data.temperature)°C" : "\(data.temperature)°F"
     tempRangeLabel.text = "↑\(data.maxTemp)° ↓\(data.minTemp)°"
     feelsLikeLabel.text = "체감 온도 \(data.feelsLikeTemp)°"
     
-    //self.hourlyForecasts = data.hourlyForecast
+    self.hourlyForecasts = data.hourlyForecast
     self.hourlyCollectionView.reloadData()
   }
 }
