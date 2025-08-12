@@ -9,6 +9,7 @@ import Foundation
 
 enum UserDefaultsKey {
   static let recentSearchHistory = "recentSearchHistory"
+  static let recentSearchLocations = "recentSearchLocations"
   static let savedLocation = "savedLocation"
   static let temperatureUnit = "TemperatureUnit"
 }
@@ -39,6 +40,39 @@ class UserDefaultsService {
   
   func removeAllRecentSearchHistory() {
     defaults.removeObject(forKey: UserDefaultsKey.recentSearchHistory)
+  }
+  
+  // MARK: - 최근 검색어 위치 관리
+  
+  func loadRecentSearchLocations() -> [Location] {
+    guard let data = defaults.data(forKey: UserDefaultsKey.recentSearchLocations),
+          let locations = try? JSONDecoder().decode([Location].self, from: data) else {
+      return []
+    }
+    return locations
+  }
+  
+  func addRecentSearchLocation(_ location: Location) {
+    var locations = loadRecentSearchLocations()
+    
+    // 중복 제거
+    locations.removeAll { existingLocation in
+      existingLocation.title == location.title &&
+      existingLocation.subtitle == location.subtitle
+    }
+    
+    // 최신 위치를 맨 앞에 추가
+    locations.insert(location, at: 0)
+    
+    // 10개 제한
+    if locations.count > 10 {
+      locations = Array(locations.prefix(10))
+    }
+    
+    // 저장
+    if let data = try? JSONEncoder().encode(locations) {
+      defaults.set(data, forKey: UserDefaultsKey.recentSearchLocations)
+    }
   }
   
   // MARK: - 저장된 위치 관리
