@@ -19,15 +19,7 @@ class GridCell: UICollectionViewCell {
   private var currentWeather: CurrentWeather?
   private var hourlyForecasts: [HourlyForecast] = []
   
-  // 임시 데이터 소스
-//  private var hourlyForecasts: [HourlyForecast] = [HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5)]
-  
   // MARK: - UI Elements
-  
-//  private let mainWeatherImageView = UIImageView().then {
-//    $0.contentMode = .scaleAspectFit
-//    $0.image = UIImage(named: "Day Clear")
-//  }
   
   private let mainWeatherImageView = LottieAnimationView().then {
     $0.contentMode = .scaleAspectFit
@@ -84,7 +76,7 @@ class GridCell: UICollectionViewCell {
   
   let layout = UICollectionViewFlowLayout().then {
     $0.scrollDirection = .horizontal
-    $0.itemSize = CGSize(width: 70, height: 140)
+    $0.itemSize = CGSize(width: 55, height: 120)
     $0.minimumLineSpacing = 12
   }
   
@@ -135,7 +127,7 @@ class GridCell: UICollectionViewCell {
     cardBackgroundView.addSubview(mainStackView)
     
     mainWeatherImageView.snp.makeConstraints {
-      $0.height.equalTo(180).priority(999) // 이미지 크기에 맞게 조절
+      $0.height.equalTo(240).priority(999) // 이미지 크기에 맞게 조절
       $0.top.equalToSuperview()
       $0.centerX.equalToSuperview()
     }
@@ -146,9 +138,8 @@ class GridCell: UICollectionViewCell {
     }
     
     mainStackView.snp.makeConstraints {
-      $0.top.equalToSuperview().inset(70).priority(999)
       $0.leading.trailing.equalToSuperview().inset(20)
-      $0.bottom.equalToSuperview().inset(30).priority(999)
+      $0.top.bottom.equalToSuperview().inset(30).priority(999)
     }
     
     tempRangeLabel.snp.makeConstraints {
@@ -185,8 +176,6 @@ class GridCell: UICollectionViewCell {
     tempRangeLabel.text  = "↑\(data.maxTemp)° ↓\(data.minTemp)°"
     feelsLikeLabel.text  = "체감 온도 \(data.feelsLikeTemp)°"
     
-    // 메인 일러스트 (옵션)
-//    mainWeatherImageView.image = UIImage(named: topWeatherIllustrationName(for: data.icon, isDayTime: data.isDayNow))
     mainWeatherImageView.animation = LottieAnimation.named(topWeatherIllustrationName(for: data.icon, isDayTime: data.isDayNow))
     mainWeatherImageView.play()
     

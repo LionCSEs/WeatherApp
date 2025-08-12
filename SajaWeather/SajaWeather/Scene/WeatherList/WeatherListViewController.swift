@@ -11,12 +11,13 @@ import SnapKit
 import RxSwift
 import RxCocoa
 import ReactorKit
+import CoreLocation
 
-class WeatherListViewController: UIViewController, View {
+class WeatherListViewController: BaseViewController, View {
   // 스크롤이 멈출 때마다 중앙 아이템의 IndexPath를 전달할 Subject
   let centeredIndexPathSubject = PublishSubject<IndexPath>()
   var dataSource: UICollectionViewDiffableDataSource<WeatherListSection, WeatherListItem>!
-  var disposeBag = DisposeBag()
+ // var disposeBag = DisposeBag()
   
   private var gradientBackground = GradientView(style: .unknown)
   
@@ -58,10 +59,14 @@ class WeatherListViewController: UIViewController, View {
   func bind(reactor: WeatherListViewReactor) {
     
     collectionView.rx.itemSelected
-      .subscribe(onNext: { indexPath in
-        print("\(indexPath.item)번 셀이 선택되었습니다.")
-        // 셀 선택 시 로직을 처리
-      })
+      .map { indexPath in
+        if let item = self.dataSource.itemIdentifier(for: indexPath) {
+          let location = item.weatherData.address.coordinate
+          return AppStep.weatherDetailIsRequired(location)
+        }
+        return AppStep.weatherDetailIsRequired(CLLocationCoordinate2D(latitude: 37.5665, longitude: 126.9780))
+      }
+      .bind(to: steps)
       .disposed(by: disposeBag)
     
     centeredIndexPathSubject
@@ -94,8 +99,8 @@ class WeatherListViewController: UIViewController, View {
       .disposed(by: disposeBag)
     
     plusButton.rx.tap
-      .map { Reactor.Action.plusButtonTapped }
-      .bind(to: reactor.action)
+      .map { AppStep.searchIsRequired }
+      .bind(to: steps)
       .disposed(by: disposeBag)
     
     reactor.state
@@ -131,21 +136,6 @@ class WeatherListViewController: UIViewController, View {
       .distinctUntilChanged()
       .subscribe(onNext: { [weak self] tempUnit in
         self?.tempToggle.isLeftSelected = tempUnit == .celsius
-      })
-      .disposed(by: disposeBag)
-    
-    // shouldPresentSearch 상태가 true일 때만 검색 화면 표시
-    reactor.state
-      .map { $0.shouldPresentPlus }
-      .distinctUntilChanged()
-      .filter { $0 } // true일 때만 통과
-      .subscribe(onNext: { [weak self] _ in
-        print("검색 화면을 띄웁니다.")
-//        UserDefaultsService.shared.addSavedLocation(SavedLocation(name: "서울", lat: 37.5665, lon: 126.9780))
-//        UserDefaultsService.shared.addSavedLocation(SavedLocation(name: "jeju", lat: 33.5577, lon: 126.8112))
-//        print(UserDefaultsService.shared.loadSavedLocation())
-        // let searchVC = SearchViewController()
-        // self?.present(searchVC, animated: true)
       })
       .disposed(by: disposeBag)
     
