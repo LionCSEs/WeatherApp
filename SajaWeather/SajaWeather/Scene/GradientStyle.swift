@@ -18,6 +18,7 @@ enum GradientStyle {
   case snowyNight
   case thunderDay
   case thunderNight
+  case unknown
   
   var colors: [UIColor] {
     switch self {
@@ -29,7 +30,7 @@ enum GradientStyle {
       return [.cloudyAndRainyDayTop, .cloudyDayBottom]
     case .cloudyNight:
       return [.cloudyNightTop, .cloudyNightBottom]
-      case .rainyDay:
+    case .rainyDay:
       return [.cloudyAndRainyDayTop, .rainyDayBottom]
     case .rainyNight:
       return [.rainyNightTop, .rainyNightBottom]
@@ -37,10 +38,28 @@ enum GradientStyle {
       return [.snowyDayTop, .snowyDayBottom]
     case .snowyNight:
       return [.snowyNightTop, .snowyNightBottom]
-      case .thunderDay:
+    case .thunderDay:
       return [.thunderDayTop, .thunderDayBottom]
     case .thunderNight:
       return [.thunderNightTop, .thunderNightBottom]
+    case .unknown:
+      return [UIColor(red: 183/255, green: 183/255, blue: 183/255, alpha: 1), UIColor(red: 183/255, green: 183/255, blue: 183/255, alpha: 1)]
+    }
+  }
+  
+  var imageName: String {
+    switch self {
+    case .clearDay: return "clearDay"
+    case .clearNight: return "clearNight"
+    case .cloudyDay: return "cloudDay"
+    case .cloudyNight: return "cloudNight"
+    case .rainyDay: return "rainyDay"
+    case .rainyNight: return "rainyNight"
+    case .snowyDay: return "snowyDay"
+    case .snowyNight: return "snowyNight"
+    case .thunderDay: return "thunderDay"
+    case .thunderNight: return "thunderNight"
+    case .unknown: return "unknown"
     }
   }
 }
