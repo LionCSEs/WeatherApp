@@ -12,41 +12,41 @@ import Foundation
 // swiftlint:disable:next cyclomatic_complexity
 private func baseAssetName(for code: Int) -> String {
   switch code {
-  // 천둥/번개
+    // 천둥/번개
   case 200...202: return "200"      // no d/n
   case 210...211: return "210"      // d/n
   case 212, 221:  return "212"      // no d/n
   case 230...232: return "230"      // no d/n
-
-  // 이슬비/비
+    
+    // 이슬비/비
   case 300...302, 310: return "300" // d/n
   case 311:            return "311" // no d/n
   case 312...314:      return "312" // d/n
   case 321:            return "321" // no d/n
-
+    
   case 500...501:      return "500" // d/n
   case 502...503:      return "502" // no d/n
   case 504, 511, 520:  return "504" // d/n
   case 521...522:      return "521" // no d/n
   case 531:            return "531" // no d/n
-
-  // 눈
+    
+    // 눈
   case 600...601:      return "600" // d/n
   case 602:            return "602" // no d/n
   case 611...612:      return "611" // d/n
   case 613:            return "613" // no d/n
   case 615...616, 620: return "615" // d/n
   case 621...622:      return "621" // no d/n
-
-  // 대기 / 토네이도
+    
+    // 대기 / 토네이도
   case 701...771:      return "701" // d/n
   case 781:            return "781" // no d/n
-
-  // 맑음/구름
+    
+    // 맑음/구름
   case 800:            return "800" // d/n
   case 801...803:      return "801" // d/n
   case 804:            return "804" // no d/n
-
+    
   default:
     return "800"
   }
@@ -83,7 +83,7 @@ func topWeatherIllustrationName(for code: Int, isDayTime: Bool) -> String {
 func topLionIllustrationName(for code: Int, isDayTime: Bool) -> String {
   // 밤 맑음은 자는 사자
   if !isDayTime && code == 800 { return "Lion Sleep" }
-
+  
   switch code {
   case 200...232: return "Lion Thunderstorm"
   case 300...321, 500...531: return "Lion Rain"
