@@ -19,7 +19,6 @@
 		B534098E2E4319920029C85E /* .editorconfig in Resources */ = {isa = PBXBuildFile; fileRef = B534098D2E4319920029C85E /* .editorconfig */; };
 		B5340DAF2E4375E30029C85E /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = B5340DAE2E4375E30029C85E /* Config.xcconfig */; };
 		B53410762E445FED0029C85E /* RxMoya in Frameworks */ = {isa = PBXBuildFile; productRef = B53410752E445FED0029C85E /* RxMoya */; };
-		B57A371D2E4B5C7E002A87E7 /* RxFlow in Frameworks */ = {isa = PBXBuildFile; productRef = B57A371C2E4B5C7E002A87E7 /* RxFlow */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,7 +54,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B57A371D2E4B5C7E002A87E7 /* RxFlow in Frameworks */,
 				B53409892E4316670029C85E /* RxSwift in Frameworks */,
 				B53409872E4316670029C85E /* RxRelay in Frameworks */,
 				369A3C542E4A2A7600996D15 /* HostingView in Frameworks */,
@@ -118,7 +116,6 @@
 				B53409862E4316670029C85E /* RxRelay */,
 				B53409882E4316670029C85E /* RxSwift */,
 				B53410752E445FED0029C85E /* RxMoya */,
-				B57A371C2E4B5C7E002A87E7 /* RxFlow */,
 				369A3C532E4A2A7600996D15 /* HostingView */,
 				36CF10B32E4B64C30014419D /* RxFlow */,
 			);
@@ -156,7 +153,6 @@
 				B53409802E4316510029C85E /* XCRemoteSwiftPackageReference "ReactorKit" */,
 				B53409832E4316670029C85E /* XCRemoteSwiftPackageReference "RxSwift" */,
 				B53410742E445FED0029C85E /* XCRemoteSwiftPackageReference "Moya" */,
-				B57A371B2E4B5C7E002A87E7 /* XCRemoteSwiftPackageReference "RxFlow" */,
 				369A3C522E4A2A7600996D15 /* XCRemoteSwiftPackageReference "HostingView" */,
 				36CF10B22E4B64C30014419D /* XCRemoteSwiftPackageReference "RxFlow" */,
 			);
@@ -484,14 +480,6 @@
 				minimumVersion = 15.0.3;
 			};
 		};
-		B57A371B2E4B5C7E002A87E7 /* XCRemoteSwiftPackageReference "RxFlow" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/RxSwiftCommunity/RxFlow.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.13.2;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -539,11 +527,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B53410742E445FED0029C85E /* XCRemoteSwiftPackageReference "Moya" */;
 			productName = RxMoya;
-		};
-		B57A371C2E4B5C7E002A87E7 /* RxFlow */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B57A371B2E4B5C7E002A87E7 /* XCRemoteSwiftPackageReference "RxFlow" */;
-			productName = RxFlow;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

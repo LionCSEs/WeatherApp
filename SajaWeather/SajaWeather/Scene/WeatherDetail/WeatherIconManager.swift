@@ -9,6 +9,7 @@ import Foundation
 
 /// 에셋 구조에 맞춘 베이스 코드 매핑
 /// 여러 날씨 코드를 하나의 베이스 이미지로 통합
+// swiftlint:disable:next cyclomatic_complexity
 private func baseAssetName(for code: Int) -> String {
   switch code {
   // 천둥/번개
@@ -25,7 +26,7 @@ private func baseAssetName(for code: Int) -> String {
 
   case 500...501:      return "500" // d/n
   case 502...503:      return "502" // no d/n
-  case 504, 511, 520:  return "504" // d/n  ← **중요: 에셋은 504d/n**
+  case 504, 511, 520:  return "504" // d/n
   case 521...522:      return "521" // no d/n
   case 531:            return "531" // no d/n
 
@@ -43,7 +44,7 @@ private func baseAssetName(for code: Int) -> String {
 
   // 맑음/구름
   case 800:            return "800" // d/n
-  case 801...803:      return "801" // d/n  (에셋은 801d/n 하나)
+  case 801...803:      return "801" // d/n
   case 804:            return "804" // no d/n
 
   default:
