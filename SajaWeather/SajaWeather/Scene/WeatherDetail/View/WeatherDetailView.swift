@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import Then
+import Lottie
 
 final class WeatherDetailView: UIView {
 
@@ -34,9 +35,15 @@ final class WeatherDetailView: UIView {
     $0.spacing = 8
   }
 
-  private let weatherIconView = UIImageView().then {
-    $0.image = UIImage(named: "Day Clear")
+//  private let weatherIconView = UIImageView().then {
+//    $0.image = UIImage(named: "Day Clear")
+//    $0.contentMode = .scaleAspectFit
+//  }
+  
+  private let weatherIconView = LottieAnimationView().then {
     $0.contentMode = .scaleAspectFit
+    $0.loopMode = .loop
+    $0.play()
   }
 
   private let lionIconView = UIImageView().then {
@@ -76,7 +83,7 @@ final class WeatherDetailView: UIView {
     temperatureView.addArrangedSubview(tempDetailLabel)
     temperatureView.snp.makeConstraints {
       $0.top.equalTo(safeAreaLayoutGuide).inset(30)
-      $0.size.equalTo(105)
+      $0.size.equalTo(110)
     }
     defaultConstraints += temperatureView.snp.prepareConstraints {
       $0.centerX.equalToSuperview().constraint.isActive = true
@@ -150,7 +157,8 @@ final class WeatherDetailView: UIView {
   func updateTopVisuals(weatherCode: Int, isDayTime: Bool, style: GradientStyle) {
     let weather = topWeatherIllustrationName(for: weatherCode, isDayTime: isDayTime)
     let lion = topLionIllustrationName(for: weatherCode, isDayTime: isDayTime)
-    weatherIconView.image = UIImage(named: weather)
+    weatherIconView.animation = LottieAnimation.named(weather)
+    weatherIconView.play()
     lionIconView.image = UIImage(named: lion)
     backgroundGradient.updateStyle(style, animated: true)
   }

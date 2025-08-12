@@ -9,6 +9,7 @@ import UIKit
 import SnapKit
 import Then
 import SwiftUI
+import Lottie
 
 class GridCell: UICollectionViewCell {
   
@@ -23,15 +24,23 @@ class GridCell: UICollectionViewCell {
   
   // MARK: - UI Elements
   
-  private let mainWeatherImageView = UIImageView().then {
+//  private let mainWeatherImageView = UIImageView().then {
+//    $0.contentMode = .scaleAspectFit
+//    $0.image = UIImage(named: "Day Clear")
+//  }
+  
+  private let mainWeatherImageView = LottieAnimationView().then {
     $0.contentMode = .scaleAspectFit
-    $0.image = UIImage(named: "Day Clear")
+    $0.loopMode = .loop
+    $0.play()
   }
+  
   private let locationLabel = UILabel().then {
     $0.font = .systemFont(ofSize: 20, weight: .bold)
     $0.textAlignment = .center
     $0.text = "Seoul"
   }
+  
   private let currentTempLabel = UILabel().then {
     $0.font = .systemFont(ofSize: 45, weight: .bold)
     $0.text = "25"
@@ -177,7 +186,9 @@ class GridCell: UICollectionViewCell {
     feelsLikeLabel.text  = "체감 온도 \(data.feelsLikeTemp)°"
     
     // 메인 일러스트 (옵션)
-    mainWeatherImageView.image = UIImage(named: topWeatherIllustrationName(for: data.icon, isDayTime: data.isDayNow))
+//    mainWeatherImageView.image = UIImage(named: topWeatherIllustrationName(for: data.icon, isDayTime: data.isDayNow))
+    mainWeatherImageView.animation = LottieAnimation.named(topWeatherIllustrationName(for: data.icon, isDayTime: data.isDayNow))
+    mainWeatherImageView.play()
     
     hourlyCollectionView.reloadData()
   }
