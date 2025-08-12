@@ -15,11 +15,11 @@ import Then
 final class SearchViewController: BaseViewController, View {
   
   private let backgroundView = UIView().then {
-    $0.backgroundColor = .white
+    $0.backgroundColor = .black
   }
   
   private let overlayView = UIView().then {
-    $0.backgroundColor = UIColor.gray.withAlphaComponent(0.25)
+    $0.backgroundColor = UIColor.gray.withAlphaComponent(0.7)
   }
   
   private let searchBar = UISearchBar().then {
