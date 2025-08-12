@@ -19,7 +19,6 @@ final class WeatherListViewReactor: Reactor {
     case loadWeather
     case toggleLayout
     case toggleTempUnit
-    case plusButtonTapped
     case changeBackgroundStyle(GradientStyle)
   }
   
@@ -27,7 +26,6 @@ final class WeatherListViewReactor: Reactor {
     case setLayoutType(LayoutType)
     case setTempUnit(TemperatureUnit)
     case setWeatherItems([WeatherListItem])
-    case setShouldPresentPlus(Bool)
     case setBackgroundStyle(GradientStyle)
   }
   
@@ -36,12 +34,10 @@ final class WeatherListViewReactor: Reactor {
     var tempUnit: TemperatureUnit
     var weatherItems: [WeatherListItem] = []
     var backgroundStyle: GradientStyle = .unknown
-    var shouldPresentPlus: Bool = false
   }
   
   let initialState: State
   
-  //private let weatherService: WeatherService
   private let weatherRepository: WeatherRepositoryType
   
   init(weatherRepository: WeatherRepositoryType) {
@@ -55,24 +51,7 @@ final class WeatherListViewReactor: Reactor {
     switch action {
     case .loadWeather:
       return loadWeatherItems(unit: currentState.tempUnit)
-//      let mockData = [
-//        WeatherListItem(weatherData: CurrentWeather(
-//          address: Location(title: "", subtitle: "", fullAddress: "서울시 강남구",
-//                            coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0)),
-//          temperature: 30, maxTemp: 35, minTemp: 30, feelsLikeTemp: 30,
-//          description: "맑음", icon: 201, hourlyForecast: [], dailyForecast: [],
-//          humidity: 0, windSpeed: 0, airQuality: .fair, sunrise: Date(), sunset: Date()
-//        )),
-//        WeatherListItem(weatherData: CurrentWeather(
-//          address: Location(title: "", subtitle: "", fullAddress: "서울시 강남구",
-//                            coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0)),
-//          temperature: 30, maxTemp: 40, minTemp: 30, feelsLikeTemp: 30,
-//          description: "흐림", icon: 601, hourlyForecast: [], dailyForecast: [],
-//          humidity: 0, windSpeed: 0, airQuality: .fair, sunrise: Date(), sunset: Date()
-//        ))
-//      ]
-//      return .just(.setWeatherItems(mockData))
-      
+
     case .toggleLayout:
       let newLayoutType: LayoutType = currentState.layoutType == .grid ? .list : .grid
       return .just(.setLayoutType(newLayoutType))
@@ -82,12 +61,6 @@ final class WeatherListViewReactor: Reactor {
       return Observable.concat([
         .just(.setTempUnit(newTempUnit)),
         loadWeatherItems(unit: newTempUnit)
-      ])
-      
-    case .plusButtonTapped:
-      return .concat([
-        .just(.setShouldPresentPlus(true)),
-        .just(.setShouldPresentPlus(false))
       ])
       
     case let .changeBackgroundStyle(style):
@@ -105,10 +78,7 @@ final class WeatherListViewReactor: Reactor {
       state.tempUnit = tempUnit
     case .setWeatherItems(let weatherItems):
       state.weatherItems = weatherItems
-      state.backgroundStyle = weatherItems.first?.weatherData.backgroundStyle ?? .unknown
-      //print(weatherItems)
-    case .setShouldPresentPlus(let shouldPresentPlus):
-      state.shouldPresentPlus = shouldPresentPlus
+      state.backgroundStyle = currentState.layoutType == .grid ? weatherItems.first?.weatherData.backgroundStyle ?? .unknown : .unknown
     case let .setBackgroundStyle(style):
       state.backgroundStyle = style
     }
