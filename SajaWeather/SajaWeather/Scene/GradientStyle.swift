@@ -46,4 +46,20 @@ enum GradientStyle {
       return [UIColor(red: 183/255, green: 183/255, blue: 183/255, alpha: 1), UIColor(red: 183/255, green: 183/255, blue: 183/255, alpha: 1)]
     }
   }
+  
+  var imageName: String {
+    switch self {
+    case .clearDay: return "clearDay"
+    case .clearNight: return "clearNight"
+    case .cloudyDay: return "cloudDay"
+    case .cloudyNight: return "cloudNight"
+    case .rainyDay: return "rainyDay"
+    case .rainyNight: return "rainyNight"
+    case .snowyDay: return "snowyDay"
+    case .snowyNight: return "snowyNight"
+    case .thunderDay: return "thunderDay"
+    case .thunderNight: return "thunderNight"
+    case .unknown: return "unknown"
+    }
+  }
 }
