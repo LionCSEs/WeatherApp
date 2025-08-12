@@ -37,9 +37,6 @@ final class WeatherService: WeatherServiceType {
     let currentWeatherObservable = provider.rx
       .request(.current(lat: lat, lon: lon, units: units))
       .map(CurrentWeatherResponseDTO.self)
-      .do(onSuccess: { dto in
-        print("[Current] temp=\(dto.main.temp), feels_like=\(dto.main.feelsLike), min=\(dto.main.tempMin), max=\(dto.main.tempMax)")
-      })
     
     let hourlyForecastObservable = provider.rx
       .request(.hourlyForecast(lat: lat, lon: lon, units: units))
@@ -48,11 +45,6 @@ final class WeatherService: WeatherServiceType {
     let dailyForecastObservable = provider.rx
       .request(.dailyForecast(lat: lat, lon: lon, units: units))
       .map(DailyForecastResponseDTO.self)
-      .do(onSuccess: { dto in
-        if let today = dto.list.first {
-          print("[Daily] min=\(today.temp.min), max=\(today.temp.max)")
-        }
-      })
     
     let airQualityObservable = provider.rx
       .request(.airQuality(lat: lat, lon: lon))

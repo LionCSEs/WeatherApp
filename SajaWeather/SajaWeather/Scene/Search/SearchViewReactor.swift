@@ -79,7 +79,7 @@ final class SearchViewReactor: Reactor {
     switch action {
     case .viewDidLoad:
       return Observable.just(
-        Mutation.setRecentSearches(userDefaultsService.loadRecentSearchLocations())
+        Mutation.setRecentSearches(userDefaultsService.loadRecentSearchHistory())
       )
       
     case .searchBarDidBeginEditing:
@@ -108,7 +108,7 @@ final class SearchViewReactor: Reactor {
       ])
       
     case .selectLocation(let location):
-      userDefaultsService.addRecentSearchLocation(location)
+      userDefaultsService.addRecentSearchHistory(location)
       return Observable.just(Mutation.setSelectedLocation(location))
       
     case .selectRecentSearch(let location):

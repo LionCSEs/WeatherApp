@@ -64,7 +64,7 @@ extension CurrentWeather {
         maxTemp: Int(item.temp.max.rounded()),
         minTemp: Int(item.temp.min.rounded()),
         sunrise: Date(timeIntervalSince1970: TimeInterval(item.sunrise)),
-        sunset:  Date(timeIntervalSince1970: TimeInterval(item.sunset))
+        sunset: Date(timeIntervalSince1970: TimeInterval(item.sunset))
       )
     }
   }

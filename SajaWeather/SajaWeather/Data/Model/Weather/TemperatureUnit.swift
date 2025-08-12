@@ -10,4 +10,11 @@ import Foundation
 enum TemperatureUnit: String, CaseIterable {
   case celsius = "metric"
   case fahrenheit = "imperial"
+  
+  var symbol: String {
+    switch self {
+    case .celsius: return "C"
+    case .fahrenheit: return "F"
+    }
+  }
 }
