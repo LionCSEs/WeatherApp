@@ -75,7 +75,7 @@ func topWeatherIllustrationName(for code: Int, isDayTime: Bool) -> String {
   case 600...622: return isDayTime ? "Day Snow"   : "Night Snow"
   case 800:       return isDayTime ? "Day Clear"  : "Night Clear"
   case 801...804: return isDayTime ? "Day Clouds" : "Night Clouds"
-  case 701...781: return isDayTime ? "Day Wind"   : "Night Wind"
+  case 701...781: return isDayTime ? "Day Clouds" : "Night Clouds" // "Day Wind"   : "Night Wind"
   default:        return isDayTime ? "Day Clear"  : "Night Clear"
   }
 }

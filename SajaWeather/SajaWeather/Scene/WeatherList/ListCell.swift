@@ -120,6 +120,7 @@ class ListCell: UICollectionViewCell {
 //    weatherIconImageView.image = UIImage(systemName: "sun.max.fill")
     weatherIconImageView.animation = LottieAnimation
       .named(topWeatherIllustrationName(for: data.icon, isDayTime: data.isDayNow))
+    weatherIconImageView.play()
     weatherDescriptionLabel.text = data.description
   }
 }
