@@ -81,14 +81,15 @@ func topWeatherIllustrationName(for code: Int, isDayTime: Bool) -> String {
 }
 
 func topLionIllustrationName(for code: Int, isDayTime: Bool) -> String {
-  // 밤 맑음은 자는 사자
-  if !isDayTime && code == 800 { return "Lion Sleep" }
+  // 밤에는 자는 사자
+  if !isDayTime { return "Lion Sleep" }
   
   switch code {
   case 200...232: return "Lion Thunderstorm"
   case 300...321, 500...531: return "Lion Rain"
   case 600...622: return "Lion Snow"
-  case 701...781, 801...804: return "Lion Wind"
+  case 701...781: return "Lion Wind"
+  case 801...804: return "Lion Cloud"
   case 800: return "Lion Sun"
   default:   return "Lion Sun"
   }

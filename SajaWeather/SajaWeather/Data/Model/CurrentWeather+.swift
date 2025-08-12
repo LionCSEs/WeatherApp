@@ -35,32 +35,35 @@ extension CurrentWeather {
     self.description = weather?.description ?? ""
     self.icon = weather?.id ?? 800 // Clear Sky
     
-    let sunrise = currentWeather.sys.sunrise
-    let sunset = currentWeather.sys.sunset
-    self.sunrise = DateFormatter.formatTime(TimeInterval(sunrise))
-    self.sunset = DateFormatter.formatTime(TimeInterval(sunset))
+    // 현재 일출/일몰
+    self.sunrise = Date(timeIntervalSince1970: TimeInterval(currentWeather.sys.sunrise))
+    self.sunset  = Date(timeIntervalSince1970: TimeInterval(currentWeather.sys.sunset))
     
+    // 대기질
     let aqiValue = airQuality.list.first?.main.aqi ?? 1
     self.airQuality = AirQuality(rawValue: aqiValue) ?? .good
     
+    // 시간별
     self.hourlyForecast = hourlyForecast.list.map { item in
-      let hour = DateFormatter.formatHour(TimeInterval(item.dt))
-      return HourlyForecast(
-        hour: hour,
+      HourlyForecast(
+        date: Date(timeIntervalSince1970: TimeInterval(item.dt)),
         icon: item.weather.first?.id ?? 800,
         temperature: Int(item.main.temp.rounded()),
         humidity: item.main.humidity
       )
     }
     
+    // 일별
     self.dailyForecast = dailyForecast.list.map { item in
-      let day = DateFormatter.formatDay(TimeInterval(item.dt))
-      return DailyForecast(
-        day: day,
+      DailyForecast(
+        date: Date(timeIntervalSince1970: TimeInterval(item.dt)),
         humidity: item.humidity,
         icon: item.weather.first?.id ?? 800,
         maxTemp: Int(item.temp.max.rounded()),
-        minTemp: Int(item.temp.min.rounded()))
+        minTemp: Int(item.temp.min.rounded()),
+        sunrise: Date(timeIntervalSince1970: TimeInterval(item.sunrise)),
+        sunset:  Date(timeIntervalSince1970: TimeInterval(item.sunset))
+      )
     }
   }
 }

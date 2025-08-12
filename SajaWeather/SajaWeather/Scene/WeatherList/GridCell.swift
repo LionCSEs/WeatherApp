@@ -8,19 +8,24 @@
 import UIKit
 import SnapKit
 import Then
+import SwiftUI
 
 class GridCell: UICollectionViewCell {
   
   static let identifier = "GridCell"
+  private static let hostReuseID = "HourHostCell"
+  
+  private var currentWeather: CurrentWeather?
+  private var hourlyForecasts: [HourlyForecast] = []
   
   // 임시 데이터 소스
-  private var hourlyForecasts: [HourlyForecast] = [HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5)]
+//  private var hourlyForecasts: [HourlyForecast] = [HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5), HourlyForecast(hour: "9", icon: 4, temperature: 5, humidity: 5)]
   
   // MARK: - UI Elements
   
   private let mainWeatherImageView = UIImageView().then {
     $0.contentMode = .scaleAspectFit
-    $0.image = UIImage(systemName: "sun.max.fill")
+    $0.image = UIImage(named: "Day Clear")
   }
   private let locationLabel = UILabel().then {
     $0.font = .systemFont(ofSize: 20, weight: .bold)
@@ -30,13 +35,6 @@ class GridCell: UICollectionViewCell {
   private let currentTempLabel = UILabel().then {
     $0.font = .systemFont(ofSize: 45, weight: .bold)
     $0.text = "25"
-  }
-  
-  // 최고/최저, 체감온도를 묶을 스택뷰
-  private lazy var tempInfoStackView = UIStackView(arrangedSubviews: [tempRangeLabel, feelsLikeLabel]).then {
-    $0.axis = .vertical
-    $0.spacing = 6
-    $0.alignment = .trailing
   }
   
   private let tempRangeLabel = UILabel().then {
@@ -49,6 +47,7 @@ class GridCell: UICollectionViewCell {
     $0.textAlignment = .center
     $0.text = "↑55° ↓55°"
   }
+  
   private let feelsLikeLabel = UILabel().then {
     // 체감 온도 라벨
     $0.backgroundColor = .darkGray.withAlphaComponent(0.8)
@@ -58,6 +57,13 @@ class GridCell: UICollectionViewCell {
     $0.clipsToBounds = true
     $0.textAlignment = .center
     $0.text = "체감 온도 43"
+  }
+  
+  // 최고/최저, 체감온도를 묶을 스택뷰
+  private lazy var tempInfoStackView = UIStackView(arrangedSubviews: [tempRangeLabel, feelsLikeLabel]).then {
+    $0.axis = .vertical
+    $0.spacing = 6
+    $0.alignment = .trailing
   }
   
   private lazy var allTempInfoStackView = UIStackView(arrangedSubviews: [currentTempLabel, tempInfoStackView]).then {
@@ -78,16 +84,14 @@ class GridCell: UICollectionViewCell {
     $0.backgroundColor = .clear
     $0.showsHorizontalScrollIndicator = false
     $0.dataSource = self
-    $0.register(HourlyForecastCell.self, forCellWithReuseIdentifier: HourlyForecastCell.identifier)
+    $0.register(UICollectionViewCell.self, forCellWithReuseIdentifier: GridCell.hostReuseID)
   }
   
-  private lazy var mainStackView = UIStackView(arrangedSubviews: [
-    locationLabel, allTempInfoStackView, hourlyCollectionView
-  ]).then {
-    $0.axis = .vertical
-    $0.spacing = 25
-    $0.alignment = .center
-  }
+  private let mainStackView = UIStackView().then {
+      $0.axis = .vertical
+      $0.spacing = 25
+      $0.alignment = .center
+    }
   
   private let cardBackgroundView = UIView().then {
     $0.backgroundColor = .white.withAlphaComponent(0.6)
@@ -113,8 +117,12 @@ class GridCell: UICollectionViewCell {
   // MARK: - Setup
   
   private func setupUI() {
+    contentView.addSubview(mainWeatherImageView)
+    contentView.addSubview(cardBackgroundView)
     
-    [mainWeatherImageView, cardBackgroundView].forEach { contentView.addSubview($0) }
+    mainStackView.addArrangedSubview(locationLabel)
+    mainStackView.addArrangedSubview(allTempInfoStackView)
+    mainStackView.addArrangedSubview(hourlyCollectionView)
     cardBackgroundView.addSubview(mainStackView)
     
     mainWeatherImageView.snp.makeConstraints {
@@ -159,14 +167,31 @@ class GridCell: UICollectionViewCell {
   }
   
   func configure(with data: CurrentWeather, tempUnit: TemperatureUnit) {
-    locationLabel.text = data.address.fullAddress
-    // mainWeatherImageView.image = UIImage(named: data)
-    currentTempLabel.text = tempUnit == .celsius ? "\(data.temperature)°C" : "\(data.temperature)°F"
-    tempRangeLabel.text = "↑\(data.maxTemp)° ↓\(data.minTemp)°"
-    feelsLikeLabel.text = "체감 온도 \(data.feelsLikeTemp)°"
-    
+    self.currentWeather = data
     self.hourlyForecasts = data.hourlyForecast
-    self.hourlyCollectionView.reloadData()
+    
+    // 상단 요약
+    locationLabel.text = data.address.fullAddress
+    currentTempLabel.text = "\(data.temperature)°\(tempUnit.symbol)"
+    tempRangeLabel.text  = "↑\(data.maxTemp)° ↓\(data.minTemp)°"
+    feelsLikeLabel.text  = "체감 온도 \(data.feelsLikeTemp)°"
+    
+    // 메인 일러스트 (옵션)
+    mainWeatherImageView.image = UIImage(named: topWeatherIllustrationName(for: data.icon, isDayTime: data.isDayNow))
+    
+    hourlyCollectionView.reloadData()
+  }
+  
+  // MARK: - Helpers
+  /// 해당 시(hourDate)와 같은 날의 일출/일몰 우선 사용, 없으면 현재값 fallback
+  private func sunBounds(for hourDate: Date) -> (sunrise: Date, sunset: Date) {
+    if let cw = currentWeather,
+       let match = cw.dailyForecast.first(where: { DateFormatter.isSameDay($0.date, hourDate) }) {
+      return (match.sunrise, match.sunset)
+    }
+    if let cw = currentWeather { return (cw.sunrise, cw.sunset) }
+    let now = Date()
+    return (now, now)
   }
 }
 
@@ -174,75 +199,29 @@ class GridCell: UICollectionViewCell {
 
 extension GridCell: UICollectionViewDataSource {
   func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-    return hourlyForecasts.count
+    hourlyForecasts.count
   }
-  
+
   func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-    guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: HourlyForecastCell.identifier, for: indexPath) as? HourlyForecastCell else {
-      return UICollectionViewCell()
-    }
-    let data = hourlyForecasts[indexPath.item]
-    cell.configure(with: data)
+    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GridCell.hostReuseID, for: indexPath)
+
+    let hour = hourlyForecasts[indexPath.item]
+    let (sr, ss) = sunBounds(for: hour.date)
+    let isDay = DateFormatter.isDayTime(at: hour.date, sunrise: sr, sunset: ss)
+
+    // SwiftUI WeatherHourCell 호스팅
+    cell.contentConfiguration = UIHostingConfiguration {
+      WeatherHourCell(
+        date: hour.date,
+        icon: hour.icon,
+        temp: hour.temperature,
+        humidity: hour.humidity,
+        isDayTime: isDay
+      )
+      .background(Color.clear)
+    }.margins(.all, 0)
+
+    cell.backgroundColor = .clear
     return cell
   }
 }
-
-// 임시 셀
-class HourlyForecastCell: UICollectionViewCell {
-  static let identifier = "HourlyForecastCell"
-  
-  private lazy var stackView: UIStackView = {
-    let sv = UIStackView(arrangedSubviews: [timeLabel, iconImageView, precipitationLabel, temperatureLabel])
-    sv.axis = .vertical
-    sv.spacing = 8
-    sv.alignment = .center
-    return sv
-  }()
-  
-  private let timeLabel = UILabel()
-  private let iconImageView = UIImageView()
-  private let precipitationLabel = UILabel()
-  private let temperatureLabel = UILabel()
-  
-  override init(frame: CGRect) {
-    super.init(frame: frame)
-    setupUI()
-    setupLayout()
-  }
-  
-  required init?(coder: NSCoder) {
-    fatalError("init(coder:) has not been implemented")
-  }
-  
-  private func setupUI() {
-    contentView.backgroundColor = UIColor(white: 0.9, alpha: 0.5)
-    contentView.layer.cornerRadius = 16
-    
-    timeLabel.font = .systemFont(ofSize: 14, weight: .medium)
-    
-    iconImageView.contentMode = .scaleAspectFit
-    
-    precipitationLabel.font = .systemFont(ofSize: 12, weight: .semibold)
-    precipitationLabel.textColor = .systemBlue
-    
-    temperatureLabel.font = .systemFont(ofSize: 18, weight: .regular)
-  }
-  
-  private func setupLayout() {
-    contentView.addSubview(stackView)
-    iconImageView.snp.makeConstraints {
-      $0.width.height.equalTo(30)
-    }
-    stackView.snp.makeConstraints {
-      $0.edges.equalToSuperview().inset(12)
-    }
-  }
-  
-  func configure(with data: HourlyForecast) {
-    timeLabel.text = data.hour
-    iconImageView.image = UIImage(systemName: "sun.max.fill")
-    precipitationLabel.text = "\(data.humidity)%"
-    temperatureLabel.text = "\(data.temperature)°"
-  }
-}
-

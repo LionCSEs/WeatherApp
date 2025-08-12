@@ -105,11 +105,11 @@ final class WeatherDetailDataSourceProvider {
             let sunset = self?.currentWeather?.sunset
       else { return }
       
-      let isDayTime = DateFormatter.isDayTime(for: h.hour, sunrise: sunrise, sunset: sunset)
+      let isDayTime = DateFormatter.isDayTime(at: h.date, sunrise: sunrise, sunset: sunset)
       
       cell.contentConfiguration = UIHostingConfiguration {
         WeatherHourCell(
-          hour: h.hour,
+          date: h.date,
           icon: h.icon,
           temp: h.temperature,
           humidity: h.humidity,
@@ -126,7 +126,7 @@ final class WeatherDetailDataSourceProvider {
     return UICollectionView.CellRegistration<UICollectionViewCell, WeatherDetailItem> { [weak self] cell, _, item in
       guard case let .dailyWeather(idx) = item, let d = self?.currentWeather?.dailyForecast[safe: idx] else { return }
       cell.contentConfiguration = UIHostingConfiguration {
-        WeatherDayCell(date: d.day, humidity: d.humidity, icon: d.icon, maxTemp: d.maxTemp, minTemp: d.minTemp)
+        WeatherDayCell(date: d.date, humidity: d.humidity, icon: d.icon, maxTemp: d.maxTemp, minTemp: d.minTemp)
           .background(Color.clear)
       }.margins(.all, 0)
       cell.backgroundColor = .clear
