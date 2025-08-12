@@ -9,16 +9,17 @@ import SwiftUI
 
 struct WeatherHourCell: View {
   let hour: String
-  let icon: String // id or cod
+  let icon: Int // id or cod
   let temp: Int
   let humidity: Int
+  let isDayTime: Bool
   
   var body: some View {
     VStack(spacing: 6) {
       Text(hour)
         .font(.system(size: 12, weight: .medium))
         .foregroundStyle(.white)
-      Image(icon)
+      Image(weatherIcon(for: icon, isDayTime: isDayTime))
         .resizable()
         .aspectRatio(contentMode: .fit)
         .frame(width: 45, height: 45)
@@ -41,5 +42,5 @@ struct WeatherHourCell: View {
 }
 
 #Preview {
-  WeatherHourCell(hour: "6AM", icon: "200", temp: 26, humidity: 10)
+  WeatherHourCell(hour: "6AM", icon: 300, temp: 26, humidity: 10, isDayTime: true)
 }

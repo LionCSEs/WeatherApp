@@ -10,7 +10,7 @@ import SwiftUI
 struct WeatherDayCell: View {
   let date: String
   let humidity: Int
-  let icon: String // id or cod
+  let icon: Int // id or cod
   let maxTemp: Int
   let minTemp: Int
   
@@ -24,7 +24,7 @@ struct WeatherDayCell: View {
         .font(.system(size: 10, weight: .medium))
         .foregroundStyle(.skyBlue)
         .padding(.trailing, 5)
-      Image(icon)
+      Image(weatherIcon(for: icon, isDayTime: true))
         .resizable()
         .aspectRatio(contentMode: .fit)
         .frame(width: 33, height: 33)
@@ -42,6 +42,6 @@ struct WeatherDayCell: View {
 }
 
 #Preview {
-  WeatherDayCell(date: "오늘", humidity: 60, icon: "531", maxTemp: 31, minTemp: 27)
-  WeatherDayCell(date: "8월 11일 월요일", humidity: 10, icon: "200", maxTemp: 31, minTemp: 27)
+  WeatherDayCell(date: "오늘", humidity: 60, icon: 531, maxTemp: 31, minTemp: 27)
+  WeatherDayCell(date: "8월 11일 월요일", humidity: 10, icon: 800, maxTemp: 31, minTemp: 27)
 }

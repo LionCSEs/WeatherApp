@@ -55,11 +55,11 @@ final class AppFlow: Flow {
   private func navigateToWeatherDetail(coordinate: Coordinate) -> FlowContributors {
     
     // TODO: WeatherDetail Reactor와 ViewController로 수정
-    let viewModel = WeatherDetailViewModel(
-      locationService: locationService
+    let reactor = WeatherDetailReactor(
+      locationService: self.locationService,
+      weatherRepository: self.weatherRepository
     )
-    
-    let viewController = WeatherDetailViewController(viewModel: viewModel)
+    let viewController = WeatherDetailViewController(reactor: reactor)
     
     if rootViewController.viewControllers.isEmpty {
       // 첫 진입

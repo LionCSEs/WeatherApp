@@ -110,7 +110,7 @@ extension WeatherAPI {
     guard let key = Bundle.main.apiKey else {
       fatalError()
     }
-    return key
+    return "f9c25a0fba183b960b403a5b9eb8752b"
   }
 }
 
