@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 import Then
+import Lottie
 
 class ListCell: UICollectionViewCell {
   static let identifier = "ListCell"
@@ -45,9 +46,15 @@ class ListCell: UICollectionViewCell {
   }
   
   // 우상단 날씨 아이콘
-  private let weatherIconImageView = UIImageView().then {
+//  private let weatherIconImageView = UIImageView().then {
+//    $0.contentMode = .scaleAspectFit
+//    $0.image = UIImage(systemName: "sun.max.fill")
+//  }
+  
+  private let weatherIconImageView = LottieAnimationView().then {
     $0.contentMode = .scaleAspectFit
-    $0.image = UIImage(systemName: "sun.max.fill")
+    $0.loopMode = .loop
+    $0.play()
   }
   
   // 우하단 날씨 설명
@@ -110,7 +117,9 @@ class ListCell: UICollectionViewCell {
     currentTempLabel.text = tempUnit == .celsius ? "\(data.temperature)°C" : "\(data.temperature)°F"
     locationLabel.text = data.address.fullAddress
     detailTempLabel.text = "↑\(data.maxTemp)°↓\(data.minTemp)° · 체감 온도 \(data.feelsLikeTemp)°"
-    weatherIconImageView.image = UIImage(systemName: "sun.max.fill")
+//    weatherIconImageView.image = UIImage(systemName: "sun.max.fill")
+    weatherIconImageView.animation = LottieAnimation
+      .named(topWeatherIllustrationName(for: data.icon, isDayTime: data.isDayNow))
     weatherDescriptionLabel.text = data.description
   }
 }
