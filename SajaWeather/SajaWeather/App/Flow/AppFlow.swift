@@ -77,44 +77,32 @@ final class AppFlow: Flow {
   
   private func navigateToWeatherList() -> FlowContributors {
     
-    // TODO: WeatherList Reactor와 ViewController
-    /*
-     // WeatherList에 필요한 의존성들 주입
-     let reactor = WeatherListReactor(
-     weatherRepository: weatherRepository,
-     locationService: locationService
-     )
-     let viewController = x(reactor: reactor)
-     viewController.modalPresentationStyle = .fullScreen
-     
-     rootViewController.present(viewController, animated: true)
-     
-     return .one(flowContributor: .contribute(
-     withNextPresentable: viewController,
-     withNextStepper: viewController
-     ))
-     */
+    let reactor = WeatherListViewReactor(
+        weatherRepository: self.weatherRepository 
+    )
+    let viewController = WeatherListViewController(reactor: reactor)
+    viewController.modalPresentationStyle = .fullScreen
     
-    // 임시 구현
-    let tempViewController = UIViewController()
-    tempViewController.view.backgroundColor = .systemBlue
-    tempViewController.modalPresentationStyle = .fullScreen
+    rootViewController.present(viewController, animated: true)
     
-    rootViewController.present(tempViewController, animated: true)
-    return .none
+    return .one(flowContributor: .contribute(
+        withNextPresentable: viewController,
+        withNextStepper: viewController
+    ))
   }
   
   private func navigateToSearch() -> FlowContributors {
-    // TODO: Search Reactor와 ViewController
-
-     // Search에 필요한 의존성 주입
      let reactor = SearchViewReactor(
      locationSearchService: locationSearchService
      )
      let viewController = SearchViewController(reactor: reactor)
      viewController.modalPresentationStyle = .fullScreen
      
-     rootViewController.present(viewController, animated: true)
+    if let presentedViewController = rootViewController.presentedViewController {
+            presentedViewController.present(viewController, animated: true)
+        } else {
+            rootViewController.present(viewController, animated: true)
+        }
      
      return .one(flowContributor: .contribute(
      withNextPresentable: viewController,

@@ -47,13 +47,19 @@ class WeatherListViewController: BaseViewController, View {
     $0.layer.cornerRadius = 25
   }
   
+  init(reactor: WeatherListViewReactor) {
+      super.init(nibName: nil, bundle: nil)
+      self.reactor = reactor
+  }
+
+  required init?(coder: NSCoder) {
+      fatalError("init(coder:) has not been implemented")
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     setupUI()
     configureDataSource()
-    self.reactor = WeatherListViewReactor(
-      weatherRepository: WeatherRepository(weatherService: WeatherService())
-    )
   }
   
   func bind(reactor: WeatherListViewReactor) {
@@ -190,7 +196,7 @@ class WeatherListViewController: BaseViewController, View {
   }
 }
 
-@available(iOS 17.0, *)
-#Preview {
-  WeatherListViewController()
-}
+//@available(iOS 17.0, *)
+//#Preview {
+//  WeatherListViewController()
+//}
