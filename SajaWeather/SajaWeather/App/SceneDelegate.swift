@@ -6,19 +6,31 @@
 //
 
 import UIKit
+import RxFlow
+import RxSwift
+import CoreLocation
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
   var window: UIWindow?
+  
+  private let coordinator = FlowCoordinator()
+  private let disposeBag = DisposeBag()
   
   func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
 
     guard let windowScene = (scene as? UIWindowScene) else { return }
     let window = UIWindow(windowScene: windowScene)
     
-    window.rootViewController = ViewController()
+    let appFlow = AppFlow(window: window)
     
-    window.makeKeyAndVisible()
+    let temp: Coordinate = CLLocationCoordinate2D(latitude: 33.55766, longitude: 126.8112)
+    
+    coordinator.coordinate(
+      flow: appFlow,
+      with: OneStepper(withSingleStep: AppStep.weatherDetailIsRequired(temp))
+    )
+    
     self.window = window
   }
 
