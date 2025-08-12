@@ -8,24 +8,25 @@
 import UIKit
 import RxFlow
 import RxSwift
-import Then
 
 final class AppFlow: Flow {
   var root: Presentable {
     return self.rootViewController
   }
   
-  private lazy var rootViewController = UINavigationController().then {
-    $0.setNavigationBarHidden(true, animated: false)
-  }
+  private let rootViewController: UINavigationController = {
+    let navigationController = UINavigationController()
+    navigationController.setNavigationBarHidden(true, animated: false)
+    return navigationController
+  }()
   
   // 의존성
-  private lazy var locationService: LocationServiceType = LocationService()
-  private lazy var weatherRepository: WeatherRepositoryType = {
+  private let locationService: LocationServiceType = LocationService()
+  private let weatherRepository: WeatherRepositoryType = {
     let weatherService: WeatherServiceType = WeatherService()
     return WeatherRepository(weatherService: weatherService)
   }()
-  private lazy var locationSearchService: LocationSearchServiceType = LocationSearchService()
+  private let locationSearchService: LocationSearchServiceType = LocationSearchService()
   
   func navigate(to step: any Step) -> FlowContributors {
     guard let step = step as? AppStep else { return .none }
