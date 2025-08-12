@@ -106,7 +106,7 @@ class ListCell: UICollectionViewCell {
   }
   
   func configure(with data: CurrentWeather, tempUnit: TemperatureUnit) {
-    backgroundImageView.image = UIImage(named: data.backgroundStyle.imageName)
+    backgroundImageView.image = UIImage(named: weatherIcon(for: data.icon, isDayTime: data.isDayNow))
     currentTempLabel.text = tempUnit == .celsius ? "\(data.temperature)°C" : "\(data.temperature)°F"
     locationLabel.text = data.address.fullAddress
     detailTempLabel.text = "↑\(data.maxTemp)°↓\(data.minTemp)° · 체감 온도 \(data.feelsLikeTemp)°"

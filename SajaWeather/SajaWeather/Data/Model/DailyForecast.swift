@@ -8,9 +8,11 @@
 import Foundation
 
 struct DailyForecast {
-  let day: String
+  let date: Date
   let humidity: Int
   let icon: Int // id
   let maxTemp: Int
   let minTemp: Int
+  let sunrise: Date
+  let sunset: Date
 }

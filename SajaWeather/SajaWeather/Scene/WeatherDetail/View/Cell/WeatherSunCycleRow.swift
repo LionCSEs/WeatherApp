@@ -13,7 +13,7 @@ struct SunCycleCell: View {
   let date: Date
   
   private var parts: (time: String, ampm: String) {
-    return DateFormatter.formatTimeAndAmPm(date.timeIntervalSince1970)
+    return DateFormatter.timeParts(from: date)
   }
   
   var body: some View {
