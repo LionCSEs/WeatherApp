@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		369A3C542E4A2A7600996D15 /* HostingView in Frameworks */ = {isa = PBXBuildFile; productRef = 369A3C532E4A2A7600996D15 /* HostingView */; };
+		36B04AFE2E4BB0B8002A7F52 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 36B04AFD2E4BB0B8002A7F52 /* Lottie */; };
 		36CF10B42E4B64C30014419D /* RxFlow in Frameworks */ = {isa = PBXBuildFile; productRef = 36CF10B32E4B64C30014419D /* RxFlow */; };
 		B534097C2E4316380029C85E /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B534097B2E4316380029C85E /* SnapKit */; };
 		B534097F2E4316430029C85E /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = B534097E2E4316430029C85E /* Then */; };
@@ -59,6 +60,7 @@
 				369A3C542E4A2A7600996D15 /* HostingView in Frameworks */,
 				36CF10B42E4B64C30014419D /* RxFlow in Frameworks */,
 				B534097C2E4316380029C85E /* SnapKit in Frameworks */,
+				36B04AFE2E4BB0B8002A7F52 /* Lottie in Frameworks */,
 				B53409822E4316510029C85E /* ReactorKit in Frameworks */,
 				B53410762E445FED0029C85E /* RxMoya in Frameworks */,
 				B53409852E4316670029C85E /* RxCocoa in Frameworks */,
@@ -118,6 +120,7 @@
 				B53410752E445FED0029C85E /* RxMoya */,
 				369A3C532E4A2A7600996D15 /* HostingView */,
 				36CF10B32E4B64C30014419D /* RxFlow */,
+				36B04AFD2E4BB0B8002A7F52 /* Lottie */,
 			);
 			productName = SajaWeather;
 			productReference = B534095F2E4313F50029C85E /* SajaWeather.app */;
@@ -155,6 +158,7 @@
 				B53410742E445FED0029C85E /* XCRemoteSwiftPackageReference "Moya" */,
 				369A3C522E4A2A7600996D15 /* XCRemoteSwiftPackageReference "HostingView" */,
 				36CF10B22E4B64C30014419D /* XCRemoteSwiftPackageReference "RxFlow" */,
+				36B04AFC2E4BB0B8002A7F52 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B53409602E4313F50029C85E /* Products */;
@@ -432,6 +436,14 @@
 				minimumVersion = 1.3.0;
 			};
 		};
+		36B04AFC2E4BB0B8002A7F52 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.2;
+			};
+		};
 		36CF10B22E4B64C30014419D /* XCRemoteSwiftPackageReference "RxFlow" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/RxSwiftCommunity/RxFlow";
@@ -487,6 +499,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 369A3C522E4A2A7600996D15 /* XCRemoteSwiftPackageReference "HostingView" */;
 			productName = HostingView;
+		};
+		36B04AFD2E4BB0B8002A7F52 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 36B04AFC2E4BB0B8002A7F52 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
 		};
 		36CF10B32E4B64C30014419D /* RxFlow */ = {
 			isa = XCSwiftPackageProductDependency;
