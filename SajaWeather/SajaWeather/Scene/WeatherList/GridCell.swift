@@ -118,7 +118,7 @@ class GridCell: UICollectionViewCell {
     cardBackgroundView.addSubview(mainStackView)
     
     mainWeatherImageView.snp.makeConstraints {
-      $0.height.equalTo(180) // 이미지 크기에 맞게 조절
+      $0.height.equalTo(180).priority(999) // 이미지 크기에 맞게 조절
       $0.top.equalToSuperview()
       $0.centerX.equalToSuperview()
     }
@@ -129,18 +129,18 @@ class GridCell: UICollectionViewCell {
     }
     
     mainStackView.snp.makeConstraints {
-      $0.top.equalToSuperview().inset(70)
+      $0.top.equalToSuperview().inset(70).priority(999)
       $0.leading.trailing.equalToSuperview().inset(20)
-      $0.bottom.equalToSuperview().inset(30)
+      $0.bottom.equalToSuperview().inset(30).priority(999)
     }
     
     tempRangeLabel.snp.makeConstraints {
       $0.width.equalTo(110)
-      $0.height.equalTo(25)
+      $0.height.equalTo(25).priority(999)
     }
     feelsLikeLabel.snp.makeConstraints {
       $0.width.equalTo(110)
-      $0.height.equalTo(25)
+      $0.height.equalTo(25).priority(999)
     }
     
     locationLabel.snp.makeConstraints {
@@ -152,7 +152,7 @@ class GridCell: UICollectionViewCell {
     }
     
     hourlyCollectionView.snp.makeConstraints {
-      $0.height.equalTo(140)
+      $0.height.equalTo(140).priority(999)
       $0.horizontalEdges.equalToSuperview()
       $0.bottom.equalToSuperview()
     }
