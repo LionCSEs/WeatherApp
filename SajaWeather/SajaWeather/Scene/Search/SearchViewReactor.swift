@@ -61,7 +61,7 @@ final class SearchViewReactor: Reactor {
     self.locationSearchService = locationSearchService
     self.userDefaultsService = userDefaultsService
   }
-  
+  // TODO: init으로 해주는게 나을듯!!!!, 비동기가 아닌거여서 적합하지 않은것같음
   func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
     let loadRecentSearches = Observable.just(
       Mutation.setRecentSearches(userDefaultsService.loadRecentSearchLocations())
