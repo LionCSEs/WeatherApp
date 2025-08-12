@@ -18,6 +18,7 @@ enum GradientStyle {
   case snowyNight
   case thunderDay
   case thunderNight
+  case unknown
   
   var colors: [UIColor] {
     switch self {
@@ -41,6 +42,8 @@ enum GradientStyle {
       return [.thunderDayTop, .thunderDayBottom]
     case .thunderNight:
       return [.thunderNightTop, .thunderNightBottom]
+      case .unknown:
+      return [UIColor(red: 183/255, green: 183/255, blue: 183/255, alpha: 1), UIColor(red: 183/255, green: 183/255, blue: 183/255, alpha: 1)]
     }
   }
 }
