@@ -106,9 +106,9 @@ final class AppFlow: Flow {
   
   private func navigateToSearch() -> FlowContributors {
     // TODO: Search Reactor와 ViewController
-    /*
+
      // Search에 필요한 의존성 주입
-     let reactor = SearchReactor(
+     let reactor = SearchViewReactor(
      locationSearchService: locationSearchService
      )
      let viewController = SearchViewController(reactor: reactor)
@@ -120,15 +120,6 @@ final class AppFlow: Flow {
      withNextPresentable: viewController,
      withNextStepper: viewController
      ))
-     */
-    
-    // 임시 구현
-    let tempViewController = UIViewController()
-    tempViewController.view.backgroundColor = .systemGreen
-    tempViewController.modalPresentationStyle = .fullScreen
-    
-    rootViewController.present(tempViewController, animated: true)
-    return .none
   }
   
   private func dismissSearchAndUpdateWeather(coordinate: Coordinate?) -> FlowContributors {
