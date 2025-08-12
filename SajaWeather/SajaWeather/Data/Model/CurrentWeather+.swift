@@ -83,4 +83,9 @@ extension CurrentWeather {
       return .unknown
     }
   }
+  
+  /// 현재 시각 기준 주/야
+  var isDayNow: Bool {
+    (sunrise ... sunset).contains(Date())
+  }
 }

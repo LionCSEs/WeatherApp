@@ -1,6 +1,42 @@
 {
-  "originHash" : "8d77cc7fff11048dab6035a4ce848fc6565befd3373541e974b3e678c870a2d7",
+  "originHash" : "faf6b6302ee636601afd7c8438769e5c2bfaa0e138705663e3f5ce55b45a707f",
   "pins" : [
+    {
+      "identity" : "alamofire",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Alamofire/Alamofire.git",
+      "state" : {
+        "revision" : "513364f870f6bfc468f9d2ff0a95caccc10044c5",
+        "version" : "5.10.2"
+      }
+    },
+    {
+      "identity" : "hostingview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Jaesung-Jung/HostingView",
+      "state" : {
+        "revision" : "3259f81b50932279a1bae2d9f6d5bcae9d4c21db",
+        "version" : "1.3.0"
+      }
+    },
+    {
+      "identity" : "moya",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Moya/Moya.git",
+      "state" : {
+        "revision" : "c263811c1f3dbf002be9bd83107f7cdc38992b26",
+        "version" : "15.0.3"
+      }
+    },
+    {
+      "identity" : "reactiveswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ReactiveCocoa/ReactiveSwift.git",
+      "state" : {
+        "revision" : "c43bae3dac73fdd3cb906bd5a1914686ca71ed3c",
+        "version" : "6.7.0"
+      }
+    },
     {
       "identity" : "reactorkit",
       "kind" : "remoteSourceControl",
@@ -8,6 +44,15 @@
       "state" : {
         "revision" : "8fa33f09c6f6621a2aa536d739956d53b84dd139",
         "version" : "3.2.0"
+      }
+    },
+    {
+      "identity" : "rxflow",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RxSwiftCommunity/RxFlow",
+      "state" : {
+        "revision" : "26b3e8137c6d7a1dbd98a599b3ccb1e4314293c5",
+        "version" : "2.13.2"
       }
     },
     {

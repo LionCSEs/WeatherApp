@@ -10,6 +10,8 @@ import Then
 
 extension DateFormatter {
   
+  private static let calendar = Calendar.current
+  
   /// 시간별 예보용 포맷터
   /// 형식: 12AM, 1PM, 11PM
   private static let hourlyFormatter = DateFormatter().then {
@@ -31,7 +33,15 @@ extension DateFormatter {
     $0.locale = Locale(identifier: "ko_KR")
   }
   
-  private static let calendar = Calendar.current
+  private static let timeOnlyFormatter = DateFormatter().then {
+      $0.dateFormat = "h:mm" // 시간 부분만 포맷
+      $0.locale = Locale(identifier: "en_US")
+  }
+
+  private static let ampmFormatter = DateFormatter().then {
+      $0.dateFormat = "a" // AM/PM 부분만 포맷
+      $0.locale = Locale(identifier: "en_US")
+  }
   
   /// Unix timestamp를 시간별 예보 형식으로 변환
   /// - Parameter timeInterval: Unix timestamp
@@ -62,4 +72,39 @@ extension DateFormatter {
     }
     return dayFormatter.string(from: date)
   }
+  
+  /// Unix timestamp를 시간과 AM/PM으로 분리하여 튜플로 반환
+  static func formatTimeAndAmPm(_ timeInterval: TimeInterval) -> (time: String, ampm: String) {
+      let date = Date(timeIntervalSince1970: timeInterval)
+      return (timeOnlyFormatter.string(from: date), ampmFormatter.string(from: date))
+    }
+  
+  /// "12AM/1PM" 기준으로, **오늘 날짜의** 해당 시간대가 일출~일몰 구간에 포함되는지 확인
+  /// - Parameters:
+  ///   - hourlyString: "12AM", "1PM"과 같은 시간 문자열
+  ///   - sunrise: 일출 시간의 Date 객체
+  ///   - sunset: 일몰 시간의 Date 객체
+  /// - Returns: 주간 여부 (true: 주간, false: 야간)
+  static func isDayTime(for hourlyString: String, sunrise: Date, sunset: Date) -> Bool {
+    let cal = Calendar.current
+    
+    guard let hourlyDate = DateFormatter.hourlyFormatter.date(from: hourlyString) else {
+      return false
+    }
+    
+    let h = cal.component(.hour, from: hourlyDate)
+    let m = cal.component(.minute, from: hourlyDate)
+    
+    guard
+      let target = cal.date(bySettingHour: h, minute: m, second: 0, of: Date()),
+      let sr = cal.date(bySettingHour: cal.component(.hour, from: sunrise),
+                        minute: cal.component(.minute, from: sunrise), second: 0, of: Date()),
+      let ss = cal.date(bySettingHour: cal.component(.hour, from: sunset),
+                        minute: cal.component(.minute, from: sunset), second: 0, of: Date())
+    else { return false }
+    
+    // 경계 포함: 일출/일몰 시각을 d 로 간주
+    return (sr ... ss).contains(target)
+  }
+  
 }
