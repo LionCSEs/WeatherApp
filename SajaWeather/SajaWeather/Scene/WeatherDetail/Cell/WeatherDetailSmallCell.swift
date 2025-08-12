@@ -17,11 +17,14 @@ struct WeatherDetailSmallCell: View {
       Image(systemName: icon)
         .resizable()
         .frame(width: 20, height: 20)
+        .foregroundStyle(.white)
       VStack(alignment: .leading, spacing: 5) {
         Text(title)
           .font(.system(size: 12))
+          .foregroundStyle(.white)
         Text(value)
           .font(.system(size: 18, weight: .bold))
+          .foregroundStyle(.white)
       }
     }
   }

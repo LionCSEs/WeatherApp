@@ -31,9 +31,7 @@ struct WeatherHourCell: View {
         .foregroundStyle(.white)
     }
     .padding(10)
-    .background(
-      Color(UIColor(red: 0x9E/255, green: 0x9E/255, blue: 0x9E/255, alpha: 0.25))
-    )
+    .background(Color(.gray).opacity(0.25))
     .overlay(
       RoundedRectangle(cornerRadius: 50)
         .stroke(Color.white.opacity(0.20), lineWidth: 1)
