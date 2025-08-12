@@ -9,9 +9,9 @@ import Foundation
 import Moya
 
 enum WeatherAPI {
-  case current(lat: Double, lon: Double)
-  case hourlyForecast(lat: Double, lon: Double)
-  case dailyForecast(lat: Double, lon: Double)
+  case current(lat: Double, lon: Double, units: TemperatureUnit)
+  case hourlyForecast(lat: Double, lon: Double, units: TemperatureUnit)
+  case dailyForecast(lat: Double, lon: Double, units: TemperatureUnit)
   case airQuality(lat: Double, lon: Double)
 }
 
@@ -39,38 +39,38 @@ extension WeatherAPI: TargetType {
   
   var task: Moya.Task {
     switch self {
-    case .current(let lat, let lon):
+    case .current(let lat, let lon, let units):
       return .requestParameters(
         parameters: [
           "lat": lat,
           "lon": lon,
           "appid": apiKey,
-          "units": "metric", // 섭씨로 받아옴
+          "units": units.rawValue,
           "lang": "kr"
         ],
         encoding: URLEncoding.queryString
       )
       
-    case .hourlyForecast(let lat, let lon):
+    case .hourlyForecast(let lat, let lon, let units):
       return .requestParameters(
         parameters: [
           "lat": lat,
           "lon": lon,
           "appid": apiKey,
-          "units": "metric",
+          "units": units.rawValue,
           "lang": "kr",
           "cnt": 24
         ],
         encoding: URLEncoding.queryString
       )
       
-    case .dailyForecast(let lat, let lon):
+    case .dailyForecast(let lat, let lon, let units):
       return .requestParameters(
         parameters: [
           "lat": lat,
           "lon": lon,
           "appid": apiKey,
-          "units": "metric",
+          "units": units.rawValue,
           "lang": "kr",
           "cnt": 10
         ],
@@ -90,7 +90,6 @@ extension WeatherAPI: TargetType {
   var headers: [String: String]? {
     return ["Content-Type": "application/json"]
   }
-  
   
   var sampleData: Data {
     switch self {
