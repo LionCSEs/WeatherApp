@@ -13,10 +13,12 @@ import RxCocoa
 import ReactorKit
 
 class WeatherListViewController: UIViewController, View {
+  // 스크롤이 멈출 때마다 중앙 아이템의 IndexPath를 전달할 Subject
+  let centeredIndexPathSubject = PublishSubject<IndexPath>()
   var dataSource: UICollectionViewDiffableDataSource<WeatherListSection, WeatherListItem>!
   var disposeBag = DisposeBag()
   
-  private var gradientBackground = GradientView(style: .clearDay)
+  private var gradientBackground = GradientView(style: .unknown)
   
   let imageToggle = ToggleButton(
     leftContent: .image(UIImage(systemName: "square.grid.2x2")),
@@ -30,13 +32,13 @@ class WeatherListViewController: UIViewController, View {
   
   lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: createCompositionalLayout(for: .grid)).then {
     $0.backgroundColor = .clear
+    $0.isScrollEnabled = true
   }
   
   private let plusButton = UIButton(type: .system).then {
     $0.setImage(UIImage(systemName: "plus"), for: .normal)
     $0.backgroundColor = .gray.withAlphaComponent(0.3)
     $0.tintColor = .white
-    
     $0.layer.shadowColor = UIColor.black.cgColor
     $0.layer.shadowOpacity = 0.3
     $0.layer.shadowOffset = CGSize(width: 0, height: 4)
@@ -48,10 +50,31 @@ class WeatherListViewController: UIViewController, View {
     super.viewDidLoad()
     setupUI()
     configureDataSource()
-    self.reactor = WeatherListViewReactor(WeatherService: WeatherService())
+    self.reactor = WeatherListViewReactor(
+      weatherRepository: WeatherRepository(weatherService: WeatherService())
+    )
   }
   
   func bind(reactor: WeatherListViewReactor) {
+    
+    collectionView.rx.itemSelected
+      .subscribe(onNext: { indexPath in
+        print("\(indexPath.item)번 셀이 선택되었습니다.")
+        // 셀 선택 시 로직을 처리
+      })
+      .disposed(by: disposeBag)
+    
+    centeredIndexPathSubject
+      .distinctUntilChanged()
+      .compactMap { [weak self] indexPath -> GradientStyle? in
+        guard let item = self?.dataSource.itemIdentifier(for: indexPath) else { return nil }
+        return item.weatherData.backgroundStyle
+      }
+      .distinctUntilChanged()
+      .map { Reactor.Action.changeBackgroundStyle($0) }
+      .bind(to: reactor.action)
+      .disposed(by: disposeBag)
+    
     Observable.just(())
       .map { Reactor.Action.loadWeather }
       .bind(to: reactor.action)
@@ -104,14 +127,6 @@ class WeatherListViewController: UIViewController, View {
       .disposed(by: disposeBag)
     
     reactor.state
-      .map(\.backgroundStyle)
-      .distinctUntilChanged()
-      .subscribe(onNext: { [weak self] style in
-        self?.gradientBackground.updateStyle(style, animated: true)
-      })
-      .disposed(by: disposeBag)
-    
-    reactor.state
       .map(\.tempUnit)
       .distinctUntilChanged()
       .subscribe(onNext: { [weak self] tempUnit in
@@ -126,8 +141,19 @@ class WeatherListViewController: UIViewController, View {
       .filter { $0 } // true일 때만 통과
       .subscribe(onNext: { [weak self] _ in
         print("검색 화면을 띄웁니다.")
+//        UserDefaultsService.shared.addSavedLocation(SavedLocation(name: "서울", lat: 37.5665, lon: 126.9780))
+//        UserDefaultsService.shared.addSavedLocation(SavedLocation(name: "jeju", lat: 33.5577, lon: 126.8112))
+//        print(UserDefaultsService.shared.loadSavedLocation())
         // let searchVC = SearchViewController()
         // self?.present(searchVC, animated: true)
+      })
+      .disposed(by: disposeBag)
+    
+    reactor.state
+      .map(\.backgroundStyle)
+      .distinctUntilChanged()
+      .subscribe(onNext: { [weak self] style in
+        self?.gradientBackground.updateStyle(style, animated: true)
       })
       .disposed(by: disposeBag)
   }
