@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		369A3C542E4A2A7600996D15 /* HostingView in Frameworks */ = {isa = PBXBuildFile; productRef = 369A3C532E4A2A7600996D15 /* HostingView */; };
 		B534097C2E4316380029C85E /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = B534097B2E4316380029C85E /* SnapKit */; };
 		B534097F2E4316430029C85E /* Then in Frameworks */ = {isa = PBXBuildFile; productRef = B534097E2E4316430029C85E /* Then */; };
 		B53409822E4316510029C85E /* ReactorKit in Frameworks */ = {isa = PBXBuildFile; productRef = B53409812E4316510029C85E /* ReactorKit */; };
@@ -54,6 +55,7 @@
 			files = (
 				B53409892E4316670029C85E /* RxSwift in Frameworks */,
 				B53409872E4316670029C85E /* RxRelay in Frameworks */,
+				369A3C542E4A2A7600996D15 /* HostingView in Frameworks */,
 				B534097C2E4316380029C85E /* SnapKit in Frameworks */,
 				B53409822E4316510029C85E /* ReactorKit in Frameworks */,
 				B53410762E445FED0029C85E /* RxMoya in Frameworks */,
@@ -112,6 +114,7 @@
 				B53409862E4316670029C85E /* RxRelay */,
 				B53409882E4316670029C85E /* RxSwift */,
 				B53410752E445FED0029C85E /* RxMoya */,
+				369A3C532E4A2A7600996D15 /* HostingView */,
 			);
 			productName = SajaWeather;
 			productReference = B534095F2E4313F50029C85E /* SajaWeather.app */;
@@ -147,6 +150,7 @@
 				B53409802E4316510029C85E /* XCRemoteSwiftPackageReference "ReactorKit" */,
 				B53409832E4316670029C85E /* XCRemoteSwiftPackageReference "RxSwift" */,
 				B53410742E445FED0029C85E /* XCRemoteSwiftPackageReference "Moya" */,
+				369A3C522E4A2A7600996D15 /* XCRemoteSwiftPackageReference "HostingView" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B53409602E4313F50029C85E /* Products */;
@@ -416,6 +420,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		369A3C522E4A2A7600996D15 /* XCRemoteSwiftPackageReference "HostingView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Jaesung-Jung/HostingView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.3.0;
+			};
+		};
 		B534097A2E4316380029C85E /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit.git";
@@ -459,6 +471,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		369A3C532E4A2A7600996D15 /* HostingView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 369A3C522E4A2A7600996D15 /* XCRemoteSwiftPackageReference "HostingView" */;
+			productName = HostingView;
+		};
 		B534097B2E4316380029C85E /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B534097A2E4316380029C85E /* XCRemoteSwiftPackageReference "SnapKit" */;

@@ -6,25 +6,25 @@
 //
 
 import UIKit
+import SnapKit
+import Then
 import RxSwift
 import RxCocoa
 import CoreLocation
-import Then
-import SnapKit
-
-/// Weather Detail Section
-enum WDSection: Hashable {
-  
-}
-
-enum WDItem: Hashable {
-  
-}
 
 final class WeatherDetailViewController: UIViewController {
+  enum Section: Hashable {
+    
+  }
+
+  enum Item: Hashable {
+    
+  }
+  
+  
   private let weatherDetailView = WeatherDetailView()
   private let viewModel: WeatherDetailViewModel
-  private var dataSource: UICollectionViewDiffableDataSource<WDSection, WDItem>!
+  private var dataSource: UICollectionViewDiffableDataSource<Section, Item>!
   private let disposeBag = DisposeBag()
   
   private let button = UIButton(configuration: .filled()).then {

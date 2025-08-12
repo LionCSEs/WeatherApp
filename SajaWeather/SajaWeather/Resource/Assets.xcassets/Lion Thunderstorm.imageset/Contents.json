@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "Lion Thunderstorm.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
