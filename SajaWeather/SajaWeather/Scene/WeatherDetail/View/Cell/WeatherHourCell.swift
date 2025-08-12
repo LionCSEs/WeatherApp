@@ -18,7 +18,7 @@ struct WeatherHourCell: View {
   var body: some View {
     VStack(spacing: 6) {
       Text(DateFormatter.hourString(from: date, timeZone: timeZone))
-        .font(.system(size: 12, weight: .medium))
+        .font(.system(size: 12, weight: .regular))
         .foregroundStyle(.white)
       
       Image(weatherIcon(for: icon, isDayTime: isDayTime))
