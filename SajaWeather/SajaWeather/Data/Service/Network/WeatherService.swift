@@ -12,7 +12,7 @@ import Moya
 import CoreLocation
 
 protocol WeatherServiceType {
-  func getCurrentWeather(coordinate: CLLocationCoordinate2D) -> Single<CurrentWeather>
+  func getCurrentWeather(coordinate: CLLocationCoordinate2D, units: TemperatureUnit) -> Single<CurrentWeather>
 }
 
 final class WeatherService: WeatherServiceType {
@@ -29,20 +29,20 @@ final class WeatherService: WeatherServiceType {
     )
   }
   
-  func getCurrentWeather(coordinate: CLLocationCoordinate2D) -> Single<CurrentWeather> {
+  func getCurrentWeather(coordinate: CLLocationCoordinate2D, units: TemperatureUnit) -> Single<CurrentWeather> {
     let lat = coordinate.latitude
     let lon = coordinate.longitude
     
     let currentWeatherObservable = provider.rx
-      .request(.current(lat: lat, lon: lon))
+      .request(.current(lat: lat, lon: lon, units: units))
       .map(CurrentWeatherResponseDTO.self)
     
     let hourlyForecastObservable = provider.rx
-      .request(.hourlyForecast(lat: lat, lon: lon))
+      .request(.hourlyForecast(lat: lat, lon: lon, units: units))
       .map(HourlyForecastResponseDTO.self)
     
     let dailyForecastObservable = provider.rx
-      .request(.dailyForecast(lat: lat, lon: lon))
+      .request(.dailyForecast(lat: lat, lon: lon, units: units))
       .map(DailyForecastResponseDTO.self)
     
     let airQualityObservable = provider.rx
