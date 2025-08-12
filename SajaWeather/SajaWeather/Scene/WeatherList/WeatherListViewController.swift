@@ -193,3 +193,8 @@ class WeatherListViewController: UIViewController, View {
     }
   }
 }
+
+@available(iOS 17.0, *)
+#Preview {
+  WeatherListViewController()
+}

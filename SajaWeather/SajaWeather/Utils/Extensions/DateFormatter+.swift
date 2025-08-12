@@ -9,7 +9,6 @@ import Foundation
 import Then
 
 extension DateFormatter {
-  
   private static let calendar = Calendar.current
   
   /// 시간별 예보용 포맷터
@@ -19,92 +18,52 @@ extension DateFormatter {
     $0.locale = Locale(identifier: "en_US")
   }
   
-  /// 일출/일몰 시간용 포맷터
+  /// 일출/일몰 시간용 포맷터 ->  아래 두개로 나눠지기 때문에 없애도 됨
   /// 형식: 6:30AM, 7:45PM
   private static let timeFormatter = DateFormatter().then {
     $0.dateFormat = "h:mma"
     $0.locale = Locale(identifier: "en_US")
   }
   
+  private static let timeOnlyFormatter = DateFormatter().then {
+    $0.dateFormat = "h:mm" // 시간 부분만 포맷
+    $0.locale = Locale(identifier: "en_US")
+  }
+  
+  private static let ampmFormatter = DateFormatter().then {
+    $0.dateFormat = "a" // AM/PM 부분만 포맷
+    $0.locale = Locale(identifier: "en_US")
+  }
+  
   /// 일별 예보용 포맷터
   /// 형식: 8월 8일 금요일, 8월 9일 토요일
-  private static let dayFormatter = DateFormatter().then {
+  private static let dayKoFormatter = DateFormatter().then {
     $0.dateFormat = "MM월 dd일 EEEE"
     $0.locale = Locale(identifier: "ko_KR")
   }
   
-  private static let timeOnlyFormatter = DateFormatter().then {
-      $0.dateFormat = "h:mm" // 시간 부분만 포맷
-      $0.locale = Locale(identifier: "en_US")
-  }
-
-  private static let ampmFormatter = DateFormatter().then {
-      $0.dateFormat = "a" // AM/PM 부분만 포맷
-      $0.locale = Locale(identifier: "en_US")
+  // MARK: - Display helpers
+  static func hourString(from date: Date) -> String {
+    hourlyFormatter.string(from: date)
   }
   
-  /// Unix timestamp를 시간별 예보 형식으로 변환
-  /// - Parameter timeInterval: Unix timestamp
-  /// - Returns: "12AM", "1PM" 형식의 문자열
-  /// - Example: `DateFormatter.formatHour(1691456400)` -> "3PM"
-  static func formatHour(_ timeInterval: TimeInterval) -> String {
-    let date = Date(timeIntervalSince1970: timeInterval)
-    return hourlyFormatter.string(from: date)
+  static func dayKoString(from date: Date) -> String {
+    if calendar.isDateInToday(date) { return "오늘" }
+    return dayKoFormatter.string(from: date)
   }
   
-  /// Unix timestamp를 일출/일몰 시간 형식으로 변환
-  /// - Parameter timeInterval: Unix timestamp
-  /// - Returns: "6:30AM" 형식의 문자열
-  /// - Example: `DateFormatter.formatTime(1691456400)` -> "6:30AM"
-  static func formatTime(_ timeInterval: TimeInterval) -> Date {
-    let date = Date(timeIntervalSince1970: timeInterval)
-    return date //timeFormatter.string(from: date)
+  static func timeParts(from date: Date) -> (time: String, ampm: String) {
+    (timeOnlyFormatter.string(from: date), ampmFormatter.string(from: date))
   }
   
-  /// Unix timestamp를 일별 예보 형식으로 변환
-  /// - Parameter timeInterval: Unix timestamp
-  /// - Returns: 당일이면 "오늘", 그 외는 "8월 8일 금요일" 형식
-  /// - Example: `DateFormatter.formatDay(1691456400)` -> "오늘" 또는 "8월 8일 화요일"
-  static func formatDay(_ timeInterval: TimeInterval) -> String {
-    let date = Date(timeIntervalSince1970: timeInterval)
-    if calendar.isDateInToday(date) {
-      return "오늘"
-    }
-    return dayFormatter.string(from: date)
+  // MARK: - Daytime check
+  /// 해당 날짜의 일출/일몰 구간 포함 여부
+  static func isDayTime(at date: Date, sunrise: Date, sunset: Date) -> Bool {
+    return (sunrise ... sunset).contains(date)
   }
   
-  /// Unix timestamp를 시간과 AM/PM으로 분리하여 튜플로 반환
-  static func formatTimeAndAmPm(_ timeInterval: TimeInterval) -> (time: String, ampm: String) {
-      let date = Date(timeIntervalSince1970: timeInterval)
-      return (timeOnlyFormatter.string(from: date), ampmFormatter.string(from: date))
-    }
-  
-  /// "12AM/1PM" 기준으로, **오늘 날짜의** 해당 시간대가 일출~일몰 구간에 포함되는지 확인
-  /// - Parameters:
-  ///   - hourlyString: "12AM", "1PM"과 같은 시간 문자열
-  ///   - sunrise: 일출 시간의 Date 객체
-  ///   - sunset: 일몰 시간의 Date 객체
-  /// - Returns: 주간 여부 (true: 주간, false: 야간)
-  static func isDayTime(for hourlyString: String, sunrise: Date, sunset: Date) -> Bool {
-    let cal = Calendar.current
-    
-    guard let hourlyDate = DateFormatter.hourlyFormatter.date(from: hourlyString) else {
-      return false
-    }
-    
-    let h = cal.component(.hour, from: hourlyDate)
-    let m = cal.component(.minute, from: hourlyDate)
-    
-    guard
-      let target = cal.date(bySettingHour: h, minute: m, second: 0, of: Date()),
-      let sr = cal.date(bySettingHour: cal.component(.hour, from: sunrise),
-                        minute: cal.component(.minute, from: sunrise), second: 0, of: Date()),
-      let ss = cal.date(bySettingHour: cal.component(.hour, from: sunset),
-                        minute: cal.component(.minute, from: sunset), second: 0, of: Date())
-    else { return false }
-    
-    // 경계 포함: 일출/일몰 시각을 d 로 간주
-    return (sr ... ss).contains(target)
+  // MARK: - Utils
+  static func isSameDay(_ a: Date, _ b: Date) -> Bool {
+    calendar.isDate(a, inSameDayAs: b)
   }
-  
 }
