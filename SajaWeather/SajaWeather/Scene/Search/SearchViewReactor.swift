@@ -13,39 +13,52 @@ import Then
 final class SearchViewReactor: Reactor {
   
   enum Action {
+    case viewDidLoad
+    case searchBarDidBeginEditing
+    case searchBarDidEndEditing
     case searchTextChanged(String)
     case selectLocation(Location)
     case selectRecentSearch(Location)
-    case cancel
+    case cancelButtonClicked
   }
   
   enum Mutation {
     case setSearchText(String)
     case setRecentSearches([Location])
     case setSearchResults([Location])
-    case setIsLoading(Bool)
     case setSelectedLocation(Location)
     case setShouldDismiss(Bool)
+    case setSearchBarFocused(Bool)
+    case clearSearch
+  }
+  
+  enum DisplayState {
+    case empty           // 초기 사자 이미지
+    case recentSearches  // 최근 검색 표시
+    case searchResults   // 검색 결과 표시
   }
   
   struct State: Then {
     var searchText: String = ""
     var recentSearches: [Location] = []
     var searchResults: [Location] = []
-    var isLoading: Bool = false
     var selectedLocation: Location?
     var shouldDismiss: Bool = false
+    var isSearchBarFocused: Bool = false
     
-    var shouldShowRecentSearches: Bool {
-      return searchText.isEmpty && !recentSearches.isEmpty
-    }
-    
-    var shouldShowSearchResults: Bool {
-      return !searchText.isEmpty && !searchResults.isEmpty && !isLoading
-    }
-    
-    var shouldShowEmptyState: Bool {
-      return searchText.isEmpty && recentSearches.isEmpty
+    var displayState: DisplayState {
+      // 검색어가 있고 결과가 있으면 검색 결과
+      if !searchText.isEmpty && !searchResults.isEmpty {
+        return .searchResults
+      }
+      // 검색바가 포커스되었고 검색어가 비어있고 최근 검색이 있으면 최근 검색
+      else if isSearchBarFocused && searchText.isEmpty && !recentSearches.isEmpty {
+        return .recentSearches
+      }
+      // 그 외에는 사자 이미지
+      else {
+        return .empty
+      }
     }
   }
   
@@ -61,30 +74,37 @@ final class SearchViewReactor: Reactor {
     self.locationSearchService = locationSearchService
     self.userDefaultsService = userDefaultsService
   }
-  // TODO: init으로 해주는게 나을듯!!!!, 비동기가 아닌거여서 적합하지 않은것같음
-  func transform(mutation: Observable<Mutation>) -> Observable<Mutation> {
-    let loadRecentSearches = Observable.just(
-      Mutation.setRecentSearches(userDefaultsService.loadRecentSearchLocations())
-    )
-    return Observable.merge(mutation, loadRecentSearches)
-  }
   
   func mutate(action: Action) -> Observable<Mutation> {
     switch action {
+    case .viewDidLoad:
+      return Observable.just(
+        Mutation.setRecentSearches(userDefaultsService.loadRecentSearchLocations())
+      )
+      
+    case .searchBarDidBeginEditing:
+      return Observable.just(Mutation.setSearchBarFocused(true))
+      
+    case .searchBarDidEndEditing:
+      return Observable.just(Mutation.setSearchBarFocused(false))
+      
     case .searchTextChanged(let text):
       let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
       
+      // 텍스트가 비어있으면 검색 결과만 클리어
       if trimmedText.isEmpty {
-        return Observable.just(Mutation.setSearchText(trimmedText))
+        return Observable.concat([
+          Observable.just(Mutation.setSearchText(trimmedText)),
+          Observable.just(Mutation.setSearchResults([]))
+        ])
       }
       
+      // 검색 요청
       return Observable.concat([
         Observable.just(Mutation.setSearchText(trimmedText)),
-        Observable.just(Mutation.setIsLoading(true)),
         locationSearchService.searchCompleter(query: trimmedText)
           .map { Mutation.setSearchResults($0) }
-          .catch { _ in Observable.just(Mutation.setSearchResults([])) },
-        Observable.just(Mutation.setIsLoading(false))
+          .catch { _ in Observable.just(Mutation.setSearchResults([])) }
       ])
       
     case .selectLocation(let location):
@@ -94,8 +114,11 @@ final class SearchViewReactor: Reactor {
     case .selectRecentSearch(let location):
       return Observable.just(Mutation.setSelectedLocation(location))
       
-    case .cancel:
-      return Observable.just(Mutation.setShouldDismiss(true))
+    case .cancelButtonClicked:
+      return Observable.concat([
+        Observable.just(Mutation.clearSearch),
+        Observable.just(Mutation.setSearchBarFocused(false))
+      ])
     }
   }
   
@@ -104,9 +127,6 @@ final class SearchViewReactor: Reactor {
     case .setSearchText(let text):
       return state.with {
         $0.searchText = text
-        if text.isEmpty {
-          $0.searchResults = []
-        }
       }
       
     case .setRecentSearches(let locations):
@@ -119,11 +139,6 @@ final class SearchViewReactor: Reactor {
         $0.searchResults = results
       }
       
-    case .setIsLoading(let isLoading):
-      return state.with {
-        $0.isLoading = isLoading
-      }
-      
     case .setSelectedLocation(let location):
       return state.with {
         $0.selectedLocation = location
@@ -132,6 +147,17 @@ final class SearchViewReactor: Reactor {
     case .setShouldDismiss(let shouldDismiss):
       return state.with {
         $0.shouldDismiss = shouldDismiss
+      }
+      
+    case .setSearchBarFocused(let focused):
+      return state.with {
+        $0.isSearchBarFocused = focused
+      }
+      
+    case .clearSearch:
+      return state.with {
+        $0.searchText = ""
+        $0.searchResults = []
       }
     }
   }
