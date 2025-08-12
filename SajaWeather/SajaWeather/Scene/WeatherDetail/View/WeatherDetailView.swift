@@ -15,6 +15,12 @@ final class WeatherDetailView: UIView {
   // MARK: - Background (Gradient)
   private let backgroundGradient = GradientView(style: .clearDay)
 
+  let locationLabel = UILabel().then {
+    $0.textColor = .white
+    $0.font = .systemFont(ofSize: 20, weight: .bold)
+    $0.textAlignment = .center
+  }
+  
   let listButton = UIButton(type: .system).then {
     $0.setImage(UIImage(systemName: "list.bullet"), for: .normal)
     $0.tintColor = .white
@@ -83,6 +89,11 @@ final class WeatherDetailView: UIView {
     addSubview(backgroundGradient)
     backgroundGradient.snp.makeConstraints { $0.edges.equalToSuperview() }
     
+    addSubview(locationLabel)
+    locationLabel.snp.makeConstraints {
+      $0.top.equalTo(safeAreaLayoutGuide).inset(8)
+      $0.centerX.equalToSuperview()
+    }
 
     addSubview(temperatureView)
     temperatureView.addArrangedSubview(tempLabel)
@@ -125,19 +136,23 @@ final class WeatherDetailView: UIView {
     
     addSubview(listButton)
     listButton.snp.makeConstraints {
-      $0.top.equalTo(safeAreaLayoutGuide).inset(8)
+      $0.top.equalTo(safeAreaLayoutGuide).inset(4)
       $0.leading.equalTo(safeAreaLayoutGuide).inset(12)
       $0.width.height.equalTo(36)
     }
     
 //    addSubview(searchButton)
 //    searchButton.snp.makeConstraints {
-//      $0.top.equalTo(safeAreaLayoutGuide).inset(8)
+//      $0.top.equalTo(safeAreaLayoutGuide).inset(4)
 //      $0.trailing.equalTo(safeAreaLayoutGuide).inset(12)
 //      $0.width.height.equalTo(36)
 //    }
   }
 
+  func updateLocation(_ text: String) {
+    locationLabel.text = text
+  }
+  
   // Decoration 등록(배경 뷰)
   func registerDecoration() {
     if let layout = collectionView.collectionViewLayout as? UICollectionViewCompositionalLayout {

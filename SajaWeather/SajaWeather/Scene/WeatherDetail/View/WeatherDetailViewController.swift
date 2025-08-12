@@ -68,6 +68,9 @@ final class WeatherDetailViewController: BaseViewController, View {
         guard let self else { return }
         // 상단 요약 (단위 반영)
         let unit = UserDefaultsService.shared.loadTemperatureUnitEnum()
+        
+        self.contentView.updateLocation(weather.address.fullAddress)
+        
         self.contentView.updateSummary(
           temp: weather.temperature,
           max: weather.maxTemp,
