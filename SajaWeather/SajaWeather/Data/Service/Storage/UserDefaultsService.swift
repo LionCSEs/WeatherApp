@@ -22,29 +22,7 @@ class UserDefaultsService {
   
   // MARK: - 최근 검색어 관리
   
-  func loadRecentSearchHistory() -> [String] {
-    return defaults.stringArray(forKey: UserDefaultsKey.recentSearchHistory) ?? []
-  }
-  
-  func addRecentSearchHistory(_ keyword: String) {
-    var history = loadRecentSearchHistory()
-    
-    history.removeAll { $0 == keyword }   // 중복 제거
-    history.insert(keyword, at: 0)        // 최신 검색어순 정렬
-    
-    if history.count > 10 {               // 개수 제한
-      history = Array(history.prefix(10))
-    }
-    defaults.set(history, forKey: UserDefaultsKey.recentSearchHistory)
-  }
-  
-  func removeAllRecentSearchHistory() {
-    defaults.removeObject(forKey: UserDefaultsKey.recentSearchHistory)
-  }
-  
-  // MARK: - 최근 검색어 위치 관리
-  
-  func loadRecentSearchLocations() -> [Location] {
+  func loadRecentSearchHistory() -> [Location] {
     guard let data = defaults.data(forKey: UserDefaultsKey.recentSearchLocations),
           let locations = try? JSONDecoder().decode([Location].self, from: data) else {
       return []
@@ -52,8 +30,8 @@ class UserDefaultsService {
     return locations
   }
   
-  func addRecentSearchLocation(_ location: Location) {
-    var locations = loadRecentSearchLocations()
+  func addRecentSearchHistory(_ location: Location) {
+    var locations = loadRecentSearchHistory()
     
     // 중복 제거
     locations.removeAll { existingLocation in
@@ -73,6 +51,10 @@ class UserDefaultsService {
     if let data = try? JSONEncoder().encode(locations) {
       defaults.set(data, forKey: UserDefaultsKey.recentSearchLocations)
     }
+  }
+  
+  func removeAllRecentSearchHistory() {
+    defaults.removeObject(forKey: UserDefaultsKey.recentSearchHistory)
   }
   
   // MARK: - 저장된 위치 관리

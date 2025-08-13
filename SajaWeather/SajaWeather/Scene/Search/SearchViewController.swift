@@ -227,6 +227,7 @@ final class SearchViewController: BaseViewController, View {
     // 화면 전환 처리
     reactor.state.map(\.selectedLocation)
       .compactMap { $0 }
+      .take(1)
       .map { AppStep.searchIsDismissed($0) }
       .bind(to: steps)
       .disposed(by: disposeBag)

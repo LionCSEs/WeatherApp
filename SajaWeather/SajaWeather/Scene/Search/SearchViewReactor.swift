@@ -79,7 +79,7 @@ final class SearchViewReactor: Reactor {
     switch action {
     case .viewDidLoad:
       return Observable.just(
-        Mutation.setRecentSearches(userDefaultsService.loadRecentSearchLocations())
+        Mutation.setRecentSearches(userDefaultsService.loadRecentSearchHistory())
       )
       
     case .searchBarDidBeginEditing:
@@ -108,7 +108,16 @@ final class SearchViewReactor: Reactor {
       ])
       
     case .selectLocation(let location):
-      userDefaultsService.addRecentSearchLocation(location)
+      // 최근 검색 기록에 추가
+      userDefaultsService.addRecentSearchHistory(location)
+      
+      // SavedLocation으로도 저장
+      let savedLocation = SavedLocation(
+        name: location.fullAddress,
+        lat: location.coordinate.latitude,
+        lon: location.coordinate.longitude
+      )
+      userDefaultsService.addSavedLocation(savedLocation)
       return Observable.just(Mutation.setSelectedLocation(location))
       
     case .selectRecentSearch(let location):

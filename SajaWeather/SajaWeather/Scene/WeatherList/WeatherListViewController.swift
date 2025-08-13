@@ -47,15 +47,22 @@ class WeatherListViewController: BaseViewController, View {
     $0.layer.cornerRadius = 25
   }
   
+  init(reactor: WeatherListViewReactor) {
+      super.init(nibName: nil, bundle: nil)
+      self.reactor = reactor
+  }
+
+  required init?(coder: NSCoder) {
+      fatalError("init(coder:) has not been implemented")
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     setupUI()
     configureDataSource()
-    self.reactor = WeatherListViewReactor(
-      weatherRepository: WeatherRepository(weatherService: WeatherService())
-    )
   }
   
+  // swiftlint:disable:next function_body_length
   func bind(reactor: WeatherListViewReactor) {
     
     collectionView.rx.itemSelected
@@ -85,9 +92,10 @@ class WeatherListViewController: BaseViewController, View {
       .map { Reactor.Action.changeBackgroundStyle($0) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
-    
-    Observable.just(())
-      .map { Reactor.Action.loadWeather }
+
+    rx.viewWillAppear
+      .debug()
+      .map { _ in Reactor.Action.loadWeather }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
@@ -190,7 +198,7 @@ class WeatherListViewController: BaseViewController, View {
   }
 }
 
-@available(iOS 17.0, *)
-#Preview {
-  WeatherListViewController()
-}
+//@available(iOS 17.0, *)
+//#Preview {
+//  WeatherListViewController()
+//}

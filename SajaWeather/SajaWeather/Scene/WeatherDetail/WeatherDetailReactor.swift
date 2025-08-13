@@ -13,6 +13,7 @@ import Then
 
 final class WeatherDetailReactor : Reactor {
   struct State: Then {
+    var selectedLocation: Location?
     @Pulse var location: CLLocation?
     var currentWeather: CurrentWeather?
     var isLoading: Bool = false
@@ -21,7 +22,7 @@ final class WeatherDetailReactor : Reactor {
   
   enum Action {
     case requestLocation
-    case requestWeather(TemperatureUnit)
+    case requestWeather
   }
   
   enum Mutation {
@@ -32,8 +33,8 @@ final class WeatherDetailReactor : Reactor {
     case clearError
   }
   
-  let initialState = State()
-  
+  let initialState: State
+
   private let locationService: LocationServiceType
   private let weatherRepository: WeatherRepositoryType
   private let unitsDefault: TemperatureUnit
@@ -41,11 +42,12 @@ final class WeatherDetailReactor : Reactor {
   init(
     locationService: LocationServiceType,
     weatherRepository: WeatherRepositoryType,
-    units: TemperatureUnit = .celsius
+    location: Location?,
   ) {
+    self.initialState = State(selectedLocation: location)
     self.locationService = locationService
     self.weatherRepository = weatherRepository
-    self.unitsDefault = units
+    self.unitsDefault = UserDefaultsService.shared.loadTemperatureUnitEnum()
   }
   
   func mutate(action: Action) -> Observable<Mutation> {
@@ -59,38 +61,55 @@ final class WeatherDetailReactor : Reactor {
           return .just(.setError(e))
         }
       
-    case let .requestWeather(units):
-      let resolveLocation: Observable<Location> = {
-        // 현재 위치가 있으면 역지오코딩으로 Location 생성
-        if let location = currentState.location {
-          return locationService.reverseGeocode(location)
+    case .requestWeather:
+      let locationObservable: Observable<Location> = if let location = currentState.selectedLocation {
+        .just(location)
+      } else {
+        locationService.getLocation()
+          .flatMap { [locationService] in locationService.reverseGeocode($0) }
+      }
+      let currentWeather = locationObservable
+        .flatMap { [weatherRepository, unitsDefault] location in
+          weatherRepository.getCurrentWeather(location: location, units: unitsDefault)
         }
-        // 현재 위치가 없으면 위치 가져온 후 역지오코딩
-        return locationService.getLocation()
-          .flatMap { [locationService] clLocation in
-            locationService.reverseGeocode(clLocation)
-          }
-      }()
-      
-      let request = resolveLocation
-        .flatMapLatest { [weatherRepository] location in
-          weatherRepository.getCurrentWeather(
-            location: location,
-            units: units
-          ).asObservable()
-        }
-        .map(Mutation.setCurrentWeather)
-        .catch { error in
-          let e = (error as? LocationError) ?? .unknown
-          return .just(.setError(e))
-        }
-      
       return .concat(
-        .just(.clearError),
         .just(.setLoading(true)),
-        request,
+        currentWeather.map { .setCurrentWeather($0) },
         .just(.setLoading(false))
       )
+
+//      weatherRepository.getCurrentWeather(location: <#T##Location#>, units: unitsDefault)
+//      let resolveLocation: Observable<Location> = {
+//        // 현재 위치가 있으면 역지오코딩으로 Location 생성
+//        if let location = currentState.location {
+//          return locationService.reverseGeocode(location)
+//        }
+//        // 현재 위치가 없으면 위치 가져온 후 역지오코딩
+//        return locationService.getLocation()
+//          .flatMap { [locationService] clLocation in
+//            locationService.reverseGeocode(clLocation)
+//          }
+//      }()
+//
+//      let request = resolveLocation
+//        .flatMapLatest { [weatherRepository] location in
+//          weatherRepository.getCurrentWeather(
+//            location: location,
+//            units: units
+//          ).asObservable()
+//        }
+//        .map(Mutation.setCurrentWeather)
+//        .catch { error in
+//          let e = (error as? LocationError) ?? .unknown
+//          return .just(.setError(e))
+//        }
+//
+//      return .concat(
+//        .just(.clearError),
+//        .just(.setLoading(true)),
+//        request,
+//        .just(.setLoading(false))
+//      )
     }
   }
   

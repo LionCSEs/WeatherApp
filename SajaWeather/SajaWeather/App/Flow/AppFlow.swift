@@ -39,7 +39,7 @@ final class AppFlow: Flow {
   
   func navigate(to step: any Step) -> FlowContributors {
     guard let step = step as? AppStep else { return .none }
-    
+
     switch step {
     case .weatherDetailIsRequired(let location):
       return navigateToWeatherDetail(location: location)
@@ -55,66 +55,59 @@ final class AppFlow: Flow {
   private func navigateToWeatherDetail(location: Location) -> FlowContributors {
     
     // TODO: WeatherDetail Reactor와 ViewController로 수정
-    let reactor = WeatherDetailReactor(
-      locationService: self.locationService,
-      weatherRepository: self.weatherRepository
+    let detailViewController = WeatherDetailViewController(
+      reactor: WeatherDetailReactor(
+        locationService: self.locationService,
+        weatherRepository: self.weatherRepository,
+        location: location
+      )
     )
-    let viewController = WeatherDetailViewController(reactor: reactor)
-    
+
     if rootViewController.viewControllers.isEmpty {
       // 첫 진입
-      rootViewController.setViewControllers([viewController], animated: false)
+      let listViewController = WeatherListViewController(
+        reactor: WeatherListViewReactor(
+          weatherRepository: self.weatherRepository
+        )
+      )
+      rootViewController
+        .setViewControllers([listViewController, detailViewController], animated: false)
+      return .multiple(flowContributors: [
+        .contribute(
+          withNextPresentable: listViewController,
+          withNextStepper: listViewController
+        ),
+        .contribute(
+          withNextPresentable: detailViewController,
+          withNextStepper: detailViewController
+        )
+      ])
     } else {
-      // 기존 WeatherDetail 업데이트
-      rootViewController.setViewControllers([viewController], animated: true)
+      rootViewController.pushViewController(detailViewController, animated: true)
+      return .one(flowContributor: .contribute(
+        withNextPresentable: detailViewController,
+        withNextStepper: detailViewController
+      ))
     }
-    
-    return .one(flowContributor: .contribute(
-      withNextPresentable: viewController,
-      withNextStepper: viewController
-    ))
   }
   
   private func navigateToWeatherList() -> FlowContributors {
-    
-    // TODO: WeatherList Reactor와 ViewController
-    /*
-     // WeatherList에 필요한 의존성들 주입
-     let reactor = WeatherListReactor(
-     weatherRepository: weatherRepository,
-     locationService: locationService
-     )
-     let viewController = x(reactor: reactor)
-     viewController.modalPresentationStyle = .fullScreen
-     
-     rootViewController.present(viewController, animated: true)
-     
-     return .one(flowContributor: .contribute(
-     withNextPresentable: viewController,
-     withNextStepper: viewController
-     ))
-     */
-    
-    // 임시 구현
-    let tempViewController = UIViewController()
-    tempViewController.view.backgroundColor = .systemBlue
-    tempViewController.modalPresentationStyle = .fullScreen
-    
-    rootViewController.present(tempViewController, animated: true)
+    rootViewController.popViewController(animated: true)
     return .none
   }
   
   private func navigateToSearch() -> FlowContributors {
-    // TODO: Search Reactor와 ViewController
-
-     // Search에 필요한 의존성 주입
      let reactor = SearchViewReactor(
      locationSearchService: locationSearchService
      )
      let viewController = SearchViewController(reactor: reactor)
      viewController.modalPresentationStyle = .fullScreen
      
-     rootViewController.present(viewController, animated: true)
+    if let presentedViewController = rootViewController.presentedViewController {
+            presentedViewController.present(viewController, animated: true)
+        } else {
+            rootViewController.present(viewController, animated: true)
+        }
      
      return .one(flowContributor: .contribute(
      withNextPresentable: viewController,
@@ -123,13 +116,18 @@ final class AppFlow: Flow {
   }
   
   private func dismissSearchAndUpdateWeather(location: Location?) -> FlowContributors {
-    rootViewController.dismiss(animated: true) { [weak self] in
-      if let location = location {
-            // 선택된 위치로 WeatherDetail 업데이트
-            _ = self?.navigateToWeatherDetail(location: location)
-          }
-      // coordinate가 nil이면 그냥 dismiss만 (선택하지 않고 취소
+//    rootViewController.dismiss(animated: true) { [weak self] in
+//      if let location = location {
+//            // 선택된 위치로 WeatherDetail 업데이트
+//            _ = self?.navigateToWeatherDetail(location: location)
+//          }
+//      // coordinate가 nil이면 그냥 dismiss만 (선택하지 않고 취소
+//    }
+//    return .none
+    guard let location else {
+      return .none
     }
-    return .none
+    rootViewController.dismiss(animated: true)
+    return navigateToWeatherDetail(location: location)
   }
 }

@@ -20,7 +20,21 @@ final class WeatherDetailViewController: BaseViewController, View {
     self.reactor = reactor
   }
   required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
-  
+
+  deinit {
+    guard let scrollAnimator else {
+      return
+    }
+    switch scrollAnimator.state {
+    case .active:
+      scrollAnimator.stopAnimation(true)
+    case .stopped:
+      scrollAnimator.finishAnimation(at: .current)
+    default:
+      break
+    }
+  }
+
   override func loadView() { view = contentView }
   
   override func viewDidLoad() {
@@ -44,19 +58,22 @@ final class WeatherDetailViewController: BaseViewController, View {
   
   func bind(reactor: WeatherDetailReactor) {
     // 위치 요청
-    rx.viewDidAppear
-      .take(1)
-      .map { _ in WeatherDetailReactor.Action.requestLocation }
+    Observable.just(.requestWeather)
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
+//    rx.viewDidAppear
+//      .take(1)
+//      .map { _ in WeatherDetailReactor.Action.requestLocation }
+//      .bind(to: reactor.action)
+//      .disposed(by: disposeBag)
     
     // 단위 불러와서 날씨 요청
-    rx.viewDidAppear
-      .take(1)
-      .map { _ in UserDefaultsService.shared.loadTemperatureUnitEnum() }
-      .map(WeatherDetailReactor.Action.requestWeather)
-      .bind(to: reactor.action)
-      .disposed(by: disposeBag)
+//    rx.viewDidAppear
+//      .take(1)
+//      .map { _ in UserDefaultsService.shared.loadTemperatureUnitEnum() }
+//      .map(WeatherDetailReactor.Action.requestWeather)
+//      .bind(to: reactor.action)
+//      .disposed(by: disposeBag)
     
     // 결과 바인딩
     reactor.state
@@ -68,6 +85,9 @@ final class WeatherDetailViewController: BaseViewController, View {
         guard let self else { return }
         // 상단 요약 (단위 반영)
         let unit = UserDefaultsService.shared.loadTemperatureUnitEnum()
+        
+        self.contentView.updateLocation(weather.address.fullAddress)
+        
         self.contentView.updateSummary(
           temp: weather.temperature,
           max: weather.maxTemp,
