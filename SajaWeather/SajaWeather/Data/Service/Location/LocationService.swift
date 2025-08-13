@@ -78,13 +78,17 @@ final class LocationService: LocationServiceType {
           }
           
           let resolvedLocation = Location(
-            title: placemark.subLocality ?? placemark.locality ?? "현재 위치", // 상암동
-            subtitle: placemark.locality ?? placemark.administrativeArea ?? "현재 위치",
-            fullAddress: [
-              placemark.locality ?? placemark.administrativeArea,  // "서울특별시"
-              placemark.subLocality  // "상암동"
-            ].compactMap { $0 }.joined(separator: " "),  // "서울특별시 상암동"
-            coordinate: location.coordinate
+              title: placemark.subLocality ?? placemark.locality ?? "현재 위치",
+              subtitle: placemark.locality ?? placemark.administrativeArea ?? "현재 위치",
+              fullAddress: [
+                  placemark.administrativeArea, // 시/도 (서울특별시)
+                  placemark.locality,           // 시/군/구 (종로구)
+                  placemark.subLocality,        // 읍/면/동 (사직동)
+              ]
+              .compactMap { $0 }
+              .filter { $0 != placemark.country } // country 속성 제외
+              .joined(separator: " "),
+              coordinate: location.coordinate
           )
           
           observer.onNext(resolvedLocation)
