@@ -137,4 +137,18 @@ final class WeatherDetailViewController: BaseViewController, View {
     alert.addAction(.init(title: "확인", style: .cancel))
     present(alert, animated: true)
   }
+  
+  deinit {
+      guard let scrollAnimator else {
+        return
+      }
+      switch scrollAnimator.state {
+      case .active:
+        scrollAnimator.stopAnimation(true)
+      case .stopped:
+        scrollAnimator.finishAnimation(at: .current)
+      default:
+        break
+      }
+    }
 }
