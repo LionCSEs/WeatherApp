@@ -39,7 +39,7 @@ final class AppFlow: Flow {
   
   func navigate(to step: any Step) -> FlowContributors {
     guard let step = step as? AppStep else { return .none }
-    
+
     switch step {
     case .weatherDetailIsRequired(let location):
       return navigateToWeatherDetail(location: location)
@@ -54,41 +54,44 @@ final class AppFlow: Flow {
   
   private func navigateToWeatherDetail(location: Location) -> FlowContributors {
     
-    // TODO: WeatherDetail Reactor와 ViewController로 수정
-    let reactor = WeatherDetailReactor(
-      locationService: self.locationService,
-      weatherRepository: self.weatherRepository
+    let detailViewController = WeatherDetailViewController(
+      reactor: WeatherDetailReactor(
+        locationService: self.locationService,
+        weatherRepository: self.weatherRepository
+      )
     )
-    let viewController = WeatherDetailViewController(reactor: reactor)
-    
+
     if rootViewController.viewControllers.isEmpty {
       // 첫 진입
-      rootViewController.setViewControllers([viewController], animated: false)
+      let listViewController = WeatherListViewController(
+        reactor: WeatherListViewReactor(
+          weatherRepository: self.weatherRepository
+        )
+      )
+      rootViewController
+        .setViewControllers([listViewController, detailViewController], animated: false)
+      return .multiple(flowContributors: [
+        .contribute(
+          withNextPresentable: listViewController,
+          withNextStepper: listViewController
+        ),
+        .contribute(
+          withNextPresentable: detailViewController,
+          withNextStepper: detailViewController
+        )
+      ])
     } else {
-      // 기존 WeatherDetail 업데이트
-      rootViewController.setViewControllers([viewController], animated: true)
+      rootViewController.pushViewController(detailViewController, animated: true)
+      return .one(flowContributor: .contribute(
+        withNextPresentable: detailViewController,
+        withNextStepper: detailViewController
+      ))
     }
-    
-    return .one(flowContributor: .contribute(
-      withNextPresentable: viewController,
-      withNextStepper: viewController
-    ))
   }
   
   private func navigateToWeatherList() -> FlowContributors {
-    
-    let reactor = WeatherListViewReactor(
-        weatherRepository: self.weatherRepository 
-    )
-    let viewController = WeatherListViewController(reactor: reactor)
-    viewController.modalPresentationStyle = .fullScreen
-    
-    rootViewController.present(viewController, animated: true)
-    
-    return .one(flowContributor: .contribute(
-        withNextPresentable: viewController,
-        withNextStepper: viewController
-    ))
+    rootViewController.popViewController(animated: true)
+    return .none
   }
   
   private func navigateToSearch() -> FlowContributors {
