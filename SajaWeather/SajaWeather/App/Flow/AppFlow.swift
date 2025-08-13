@@ -54,10 +54,12 @@ final class AppFlow: Flow {
   
   private func navigateToWeatherDetail(location: Location) -> FlowContributors {
     
+    // TODO: WeatherDetail Reactor와 ViewController로 수정
     let detailViewController = WeatherDetailViewController(
       reactor: WeatherDetailReactor(
         locationService: self.locationService,
-        weatherRepository: self.weatherRepository
+        weatherRepository: self.weatherRepository,
+        location: location
       )
     )
 
@@ -114,7 +116,15 @@ final class AppFlow: Flow {
   }
   
   private func dismissSearchAndUpdateWeather(location: Location?) -> FlowContributors {
-    guard let location = location else {
+//    rootViewController.dismiss(animated: true) { [weak self] in
+//      if let location = location {
+//            // 선택된 위치로 WeatherDetail 업데이트
+//            _ = self?.navigateToWeatherDetail(location: location)
+//          }
+//      // coordinate가 nil이면 그냥 dismiss만 (선택하지 않고 취소
+//    }
+//    return .none
+    guard let location else {
       return .none
     }
     rootViewController.dismiss(animated: true)

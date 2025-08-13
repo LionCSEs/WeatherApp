@@ -62,6 +62,7 @@ class WeatherListViewController: BaseViewController, View {
     configureDataSource()
   }
   
+  // swiftlint:disable:next function_body_length
   func bind(reactor: WeatherListViewReactor) {
     
     collectionView.rx.itemSelected
@@ -91,9 +92,10 @@ class WeatherListViewController: BaseViewController, View {
       .map { Reactor.Action.changeBackgroundStyle($0) }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
-    
-    Observable.just(())
-      .map { Reactor.Action.loadWeather }
+
+    rx.viewWillAppear
+      .debug()
+      .map { _ in Reactor.Action.loadWeather }
       .bind(to: reactor.action)
       .disposed(by: disposeBag)
     
